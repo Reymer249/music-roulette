@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Play Music Roulette</title>
+</head>
+<body>
+    <h1>Welcome to the Music Roulette</h1>
+
+    <button>Create Game</button>
+
+    <p>Or Join Existing Game:</p>
+
+    {% if lobby_list %}
+        <ul>
+        {% for lobby in lobby_list %}
+            <li><a href="/lobby/{{ lobby.id }}/">{{ lobby.id }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No lobbys running...</p>
+    {% endif %}
+</body>
+</html>
