@@ -6,10 +6,15 @@ import psycopg2
 
 load_dotenv()
 
+LOCAL_DEV = os.environ['LOCAL_DEV'] == "True"
+
 # Connect to the Azure PostgreSQL database server
-con = psycopg2.connect(user=os.environ["DBUSER"], password=os.environ["DBPASS"],
-                       host="musicroulette-server.postgres.database.azure.com",
-                       port=5432, database="musicroulette-database")
+if LOCAL_DEV:
+    con = psycopg2.connect(user="postgres", password=os.environ["DBPASS"],
+                           host="localhost", database="postgres")
+else:
+    con = psycopg2.connect(user=os.environ["DBUSER"], password=os.environ["DBPASS"],
+                           host=os.environ["DBHOST"], database=os.environ["DBNAME"])
 cur = con.cursor()
 
 
