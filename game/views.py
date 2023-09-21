@@ -1,10 +1,15 @@
 from django.http import HttpResponse
 from django.template import loader
+from dotenv import load_dotenv
+import os
 import psycopg2
 
+load_dotenv()
+
 # Connect to the Azure PostgreSQL database server
-# con = psycopg2.connect()
-# cur = con.cursor()
+con = psycopg2.connect(user=os.environ['DBUSER'], password=os.environ['DBPASS'],
+                       host=os.environ['DBHOST'], port=os.environ['DBPORT'], database=os.environ['DBNAME'])
+cur = con.cursor()
 
 
 def main_page(request):
