@@ -4,17 +4,12 @@ from dotenv import load_dotenv
 import os
 import psycopg2
 
+
 load_dotenv()
-
-LOCAL_DEV = os.environ['LOCAL_DEV'] == "True"
-
 # Connect to the Azure PostgreSQL database server
-if LOCAL_DEV:
-    con = psycopg2.connect(user="postgres", password=os.environ["DBPASS"],
-                           host="localhost", database="postgres")
-else:
-    con = psycopg2.connect(user=os.environ["DBUSER"], password=os.environ["DBPASS"],
-                           host=os.environ["DBHOST"], database=os.environ["DBNAME"])
+con = psycopg2.connect(user=os.environ["DB_USER"], password=os.environ["DB_PASS"],
+                       host=os.environ["DB_HOST"], database=os.environ["DB_NAME"],
+                       port=os.environ["DB_PORT"])
 cur = con.cursor()
 
 

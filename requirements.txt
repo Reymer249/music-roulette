@@ -1,8 +1,9 @@
 asgiref
-Django
-psycopg2
+Django~=4.2.5
+psycopg2~=2.9.7
 pyodbc
-python-dotenv
+python-dotenv~=1.0.0
 pytz
 sqlparse
 tzdata
+channels~=4.0.0
