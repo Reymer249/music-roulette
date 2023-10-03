@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Play Music Roulette</title>
-</head>
-<body>
+{% extends "../base/base.html" %}
+
+{% block title %}Play Music Roulette{% endbock %}
+
+{% block body %}
     <h1>Welcome to the Music Roulette</h1>
 
     <button>Create Game</button>
@@ -20,5 +18,4 @@
     {% else %}
         <p>No lobbys running...</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}
