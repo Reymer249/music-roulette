@@ -28,8 +28,31 @@ def main_page(request):
 
 
 def lobby_page(request, lobby_id):
+    player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"}, {"id": 13, "name": "Max"}]
     template = loader.get_template("lobby_page/index.html")
     context = {
         "lobby_id": lobby_id,
+        "player_list": player_list,
+        "num_players": len(player_list),
+    }
+    return HttpResponse(template.render(context, request))
+
+def question_page(request, lobby_id):
+    player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"}, {"id": 13, "name": "Max"}]
+    template = loader.get_template("question_page/index.html")
+    context = {
+        "lobby_id": lobby_id,
+        "player_list": player_list,
+        "num_players": len(player_list),
+    }
+    return HttpResponse(template.render(context, request))
+
+def results_page(request, lobby_id):
+    player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"}, {"id": 13, "name": "Max"}]
+    template = loader.get_template("results_page/index.html")
+    context = {
+        "lobby_id": lobby_id,
+        "player_list": player_list,
+        "num_players": len(player_list),
     }
     return HttpResponse(template.render(context, request))

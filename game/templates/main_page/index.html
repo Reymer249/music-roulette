@@ -5,10 +5,12 @@
 {% block body %}
     <h1>Welcome to the Music Roulette</h1>
 
-    <button>Create Game</button>
+    <p>Create a new game:</p>
+    <a href="/lobby/12345/">
+        <button>Create Game</button>
+    </a>
 
     <p>Or Join Existing Game:</p>
-
     {% if lobby_list %}
         <ul>
         {% for lobby in lobby_list %}
@@ -19,3 +21,4 @@
         <p>No lobbys running...</p>
     {% endif %}
 {% endblock %}
+

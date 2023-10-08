@@ -2,6 +2,26 @@
 
 {% block title %}Lobby page{% endblock %}
 
+{% block colour_0 %}"#3dccc7"{% endblock %}
+{% block colour_1 %}"#68d8d6"{% endblock %}
+{% block colour_2 %}"#9ceaef"{% endblock %}
+{% block colour_3 %}"#07beb8"{% endblock %}
+{% block colour_4 %}"#8cdedc"{% endblock %}
+
 {% block body %}
     <h1>You Are In The Lobby #{{ lobby_id }}</h1>
+    {% if player_list %}
+        <h2>Players joined:</h2>
+        <ul>
+        {% for player in player_list %}
+            <li>{{ player.name }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Waiting for players to join</p>
+    {% endif %}
+    <a href="/lobby/{{ lobby_id }}/question/">
+        <button>Start Game</button>
+    </a>
+
 {% endblock %}
