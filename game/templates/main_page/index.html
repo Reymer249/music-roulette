@@ -7,14 +7,18 @@
 <body>
     <h1>Welcome to the Music Roulette</h1>
 
-    <button>Create Game</button>
+    <form method="post" action="{% url 'create_party' %}">
+        {% csrf_token %}
+        <input type="submit" value="Create New Party">
+    </form>
+
 
     <p>Or Join Existing Game:</p>
 
     {% if lobby_list %}
         <ul>
         {% for lobby in lobby_list %}
-            <li><a href="/lobby/{{ lobby.id }}/">{{ lobby.id }}</a></li>
+            <li><a href="/lobby/{{ lobby }}">{{ lobby }}</a></li>
         {% endfor %}
         </ul>
     {% else %}

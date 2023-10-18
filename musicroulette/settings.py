@@ -15,6 +15,11 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_PASS = os.getenv("DB_PASS")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +43,7 @@ ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1']
 INSTALLED_APPS = [
     "game.apps.GameConfig",
     "channels",
+    "channels_postgres",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,7 +56,15 @@ ASGI_APPLICATION = "musicroulette.asgi.application"
 
 CHANNEL_LAYERS = {
     'default': {
-        "BACKEND": 'channels.layers.InMemoryChannelLayer'
+        "BACKEND": 'channels_db.core.database_layer',
+        "CONFIG": {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASS,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
     }
 }
 
@@ -99,21 +113,35 @@ if LOCAL_DEV:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME'),
-            'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASS'),
-            'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT'),
-    }
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASS,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        },
+        'channels_postgres': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': DB_NAME,
+            'HOST': DB_HOST,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASS,
+        }
 }
 else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME'),
-            'HOST': os.environ.get('DB_HOST'),
-            'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASS'),
+            'NAME': DB_NAME,
+            'HOST': DB_HOST,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASS,
+        },
+        'channels_postgres': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': DB_NAME,
+            'HOST': DB_HOST,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASS,
         }
     }
 
