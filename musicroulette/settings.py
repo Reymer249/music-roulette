@@ -33,7 +33,6 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-LOCAL_DEV = os.environ['LOCAL_DEV'] == "True"
 
 ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1']
 
@@ -109,41 +108,23 @@ WSGI_APPLICATION = 'musicroulette.wsgi.application'
 #     }
 # }
 
-if LOCAL_DEV:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': DB_NAME,
-            'USER': DB_USER,
-            'PASSWORD': DB_PASS,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
-        },
-        'channels_postgres': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': DB_NAME,
-            'HOST': DB_HOST,
-            'USER': DB_USER,
-            'PASSWORD': DB_PASS,
-        }
-}
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': DB_NAME,
-            'HOST': DB_HOST,
-            'USER': DB_USER,
-            'PASSWORD': DB_PASS,
-        },
-        'channels_postgres': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': DB_NAME,
-            'HOST': DB_HOST,
-            'USER': DB_USER,
-            'PASSWORD': DB_PASS,
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+    },
+    'channels_postgres': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'HOST': DB_HOST,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
     }
+}
 
 
 # Password validation
