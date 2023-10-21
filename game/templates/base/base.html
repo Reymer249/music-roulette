@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>{%block title%}Base page{%endblock%}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block style %}
         <style>
             body{
@@ -35,13 +37,16 @@
             }
         </style>
     {% endblock %}
-    <title>{%block title%}Base page{%endblock%}</title>
+    
 </head>
 <body>
     <div class="wrap-layer">
         <div class="text-layer">
-            {%block body%}
-            {%endblock%}
+            {% block body %}
+            {% endblock %}
+
+            {% block script %}
+            {% endblock %}
         </div>
         <div class="background-layer">
             <svg preserveAspectRatio="xMidYMid slice" viewBox="5 20 100 70">
