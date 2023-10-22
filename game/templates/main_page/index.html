@@ -2,23 +2,94 @@
 
 {% block title %}Play Music Roulette{% endblock %}
 
-{% block body %}
-    <h1>Welcome to the Music Roulette</h1>
+{% block style %}
+<style>
+h1 {
+    color: rgb(89, 76, 173);
+    font-size: 80px;
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+    padding-top: 5%;
+}
+.host {
+    border: 2px hidden;
+    border-radius: 15px;
+    width: 400px;
+    margin-left: 400px;
+    background: thistle;
+    margin-top: 200px;
+}
+.host_text {
+    padding-top: 10%;
+    font-size: 40px;
+    text-align: center;
+    color: rgb(125, 81, 212);
+}
 
-    <p>Create a new game:</p>
-    <a href="/lobby/12345/">
-        <button>Create Game</button>
-    </a>
+.host_button {
+    margin-left: 25px;
+    margin-bottom: 20px;
+    border: hidden;
+    font-size: 50px;
+    background: rgb(125, 81, 212);
+    width: 350px;
+    height: 70px;
+    color: white;
+    font-weight: bold;
+}
+.join {
+    float: none;
+    margin-left: 1090px;
+    margin-top: -305px;
+    border: 2px hidden;
+    border-radius: 15px;
+    width: 400px;
+    background: thistle;
+}
+.join_text {
+    padding-top: 10%;
+    font-size: 40px;
+    text-align: center;
+    color: rgb(125, 81, 212);
+}
+.join_button {
+    margin-left: 25px;
+    margin-bottom: 20px;
+    border: hidden;
+    font-size: 50px;
+    background: rgb(125, 81, 212);
+    width: 350px;
+    height: 70px;
+    color: white;
+    font-weight: bold;
+}
 
-    <p>Or Join Existing Game:</p>
-    {% if lobby_list %}
-        <ul>
-        {% for lobby in lobby_list %}
-            <li><a href="/lobby/{{ lobby.id }}/">{{ lobby.id }}</a></li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No lobbys running...</p>
-    {% endif %}
+</style>
 {% endblock %}
 
+{% block body %}
+    <h1>Welcome to the Music Roulette</h1>
+    <div class="host">
+        <p class="host_text">Create your own game and invite others!</p>
+        <a href="/lobby/12345/">
+            <button class="host_button">Host Game</button>
+        </a>
+    </div>
+
+    <div class="join">
+        <p class="join_text">You got invited and have a game code?</p>
+        <a href="/lobby/54321/">
+            <button class="join_button">Join Game</button>
+        </a>
+    </div>
+        {% if lobby_list %}
+            <ul>
+            {% for lobby in lobby_list %}
+                <li><a href="/lobby/{{ lobby.id }}/">{{ lobby.id }}</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No lobbys running...</p>
+        {% endif %}
+    
+{% endblock %}
