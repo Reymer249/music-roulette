@@ -15,6 +15,11 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_PASS = os.getenv("DB_PASS")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,15 +33,20 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-LOCAL_DEV = os.environ['LOCAL_DEV'] == "True"
 
 ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1']
+
+AUTH_USER_MODEL = 'game.Users'
 
 
 # Application definition
 
 INSTALLED_APPS = [
     "game.apps.GameConfig",
+    "channels",
+    "channels_postgres",
+    "crispy_forms",
+    "crispy_bootstrap5",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +54,25 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+ASGI_APPLICATION = "musicroulette.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        "BACKEND": 'channels_db.core.database_layer',
+        "CONFIG": {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASS,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,27 +115,23 @@ WSGI_APPLICATION = 'musicroulette.wsgi.application'
 #     }
 # }
 
-if LOCAL_DEV:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': os.environ.get('DBPASS'),
-            'HOST': 'localhost',
-            'PORT': '5432',
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+    },
+    'channels_postgres': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'HOST': DB_HOST,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
     }
 }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DBNAME'),
-            'HOST': os.environ.get('DBHOST'),
-            'USER': os.environ.get('DBUSER'),
-            'PASSWORD': os.environ.get('DBPASS'),
-        }
-    }
 
 
 # Password validation
@@ -149,3 +174,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
