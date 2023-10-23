@@ -1,10 +1,12 @@
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import redirect, render
+from django.contrib.auth import login, logout, authenticate
 from dotenv import load_dotenv
 import os
 import psycopg2
 from .models import Parties
+from .forms import RegisterForm
 
 
 load_dotenv()
@@ -20,9 +22,23 @@ def main_page(request):
     lobby_list = [lobby.pid for lobby in lobby_list]
     context = {
         "lobby_list": lobby_list,
+        "user": request.user
     }
     template = loader.get_template("main_page/index.html")
     return HttpResponse(template.render(context, request))
+
+
+def sign_up(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("/")
+    else:
+        form = RegisterForm()
+
+    return render(request, "registration/sign_up.html", {"form": form})
 
 
 def create_party(request):

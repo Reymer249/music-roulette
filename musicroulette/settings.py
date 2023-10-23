@@ -36,6 +36,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1']
 
+AUTH_USER_MODEL = 'game.Users'
+
 
 # Application definition
 
@@ -43,6 +45,8 @@ INSTALLED_APPS = [
     "game.apps.GameConfig",
     "channels",
     "channels_postgres",
+    "crispy_forms",
+    "crispy_bootstrap5",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +54,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ASGI_APPLICATION = "musicroulette.asgi.application"
 
@@ -167,3 +174,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

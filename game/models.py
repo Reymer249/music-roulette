@@ -1,10 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-class Users(models.Model):
-    # TODO: from django.contrib.auth.models import AbstractUser
-    uid = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=20, null=False, unique=True)
+class Users(AbstractUser):
     spotify_link = models.CharField(max_length=100, null=False, unique=True)
 
 

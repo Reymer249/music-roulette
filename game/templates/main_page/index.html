@@ -24,5 +24,12 @@
     {% else %}
         <p>No lobbys running...</p>
     {% endif %}
+
+    {% if user.is_authenticated%}
+        <p style="color:green;">You are logged in</p>
+    {% else %}
+        <p style="color:red;">You are not logged in</p>
+    {% endif %}
+
 </body>
 </html>
