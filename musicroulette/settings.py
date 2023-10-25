@@ -42,7 +42,8 @@ AUTH_USER_MODEL = 'game.Users'
 # Application definition
 
 INSTALLED_APPS = [
-    "game.apps.GameConfig",
+    'daphne',
+    "game",
     "channels",
     "channels_postgres",
     "crispy_forms",
@@ -62,7 +63,7 @@ ASGI_APPLICATION = "musicroulette.asgi.application"
 
 CHANNEL_LAYERS = {
     'default': {
-        "BACKEND": 'channels_db.core.database_layer',
+        "BACKEND": 'channels_postgres.core.PostgresChannelLayer',
         "CONFIG": {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': DB_NAME,
@@ -106,14 +107,6 @@ WSGI_APPLICATION = 'musicroulette.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     'default': {

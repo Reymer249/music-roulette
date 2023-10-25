@@ -17,20 +17,26 @@
 
     <div id="messages"></div>
 
+    {{ lobby_id|json_script:"lobby-id" }}
     <script type="text/javascript">
-        let currentUrl = window.location.href;
-        let url = `ws://${window.location.host}/ws/socket-server/?url=${encodeURIComponent(currentUrl)}`;
-        const chatSocket = new WebSocket(url);
+        const lobbyId = JSON.parse(document.getElementById('lobby-id').textContent);
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + lobbyId
+            + '/'
+        );
+
 
         chatSocket.onmessage = function(e){
             let data = JSON.parse(e.data);
             console.log('Data:', data);
 
-            if (data.type == "chat"){
+            if (data.type === "chat"){
                 let messages = document.getElementById("messages")
-                messages.insertAdjacentHTML("beforeend", `<div>
-                                            <p>${data.message}</p>
-                                            </div>`)
+                messages.insertAdjacentHTML("beforeend", `<div><p>${data.message}</p></div>`)
             }
 
         }

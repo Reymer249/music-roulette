@@ -19,5 +19,5 @@ class UsersParties(models.Model):
 class Messages(models.Model):
     # TODO: handle time of the message so we can filter
     mid = models.AutoField(primary_key=True)
-    party_id = models.ForeignKey(Parties, db_column="messages",on_delete=models.CASCADE)
+    party_id = models.ForeignKey(Parties, db_column="messages", on_delete=models.CASCADE)
     text = models.CharField(max_length=500)

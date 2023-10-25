@@ -1,9 +1,13 @@
 asgiref
-Django~=4.2.5
-psycopg2~=2.9.7
+Django
+psycopg2
 pyodbc
-python-dotenv~=1.0.0
+python-dotenv
 pytz
 sqlparse
 tzdata
-channels~=4.0.0
+channels
+channels_postgres
+django-crispy-forms
+crispy-bootstrap5
+daphne
