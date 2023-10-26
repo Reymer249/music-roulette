@@ -9,6 +9,10 @@
 
     <a href="/">Back to main menu</a>
 
+    <h2>Players</h2>
+
+    <p id="players"></p>
+
     <h2>Lobby chat</h2>
 
     <form id="form">
@@ -24,7 +28,7 @@
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
-            + '/ws/chat/'
+            + '/ws/lobby/'
             + lobbyId
             + '/'
         );
@@ -34,11 +38,16 @@
             let data = JSON.parse(e.data);
             console.log('Data:', data);
 
-            if (data.type === "chat"){
-                let messages = document.getElementById("messages")
-                messages.insertAdjacentHTML("beforeend", `<div><p>${data.message}</p></div>`)
+            switch(data.type) {
+                case "chat":
+                    let messages = document.getElementById("messages")
+                    messages.insertAdjacentHTML("beforeend", `<div><p>${data.message}</p></div>`)
+                    break;
+                case "update_lobby_info":
+                    let players = document.getElementById("messages")
+                    players.innerHTML = data.players
+                    break;
             }
-
         }
 
         let form = document.getElementById("form");
@@ -46,6 +55,7 @@
             e.preventDefault();
             let message = e.target.message.value;
             chatSocket.send(JSON.stringify({
+                "type": "chat",
                 "message": message
             }));
             form.reset();
