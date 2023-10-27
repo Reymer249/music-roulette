@@ -107,18 +107,9 @@ h1 {
 
     <div class="join">
         <p class="join_text">You got invited and have a game code?</p>
-        <a href="/lobby/54321/">
+        <a href="/lobby/12345/lobbyselect/">
             <button class="join_button">Join Game</button>
         </a>
     </div>
-        {% if lobby_list %}
-            <ul>
-            {% for lobby in lobby_list %}
-                <li><a href="/lobby/{{ lobby.id }}/">{{ lobby.id }}</a></li>
-            {% endfor %}
-            </ul>
-        {% else %}
-            <p>No lobbys running...</p>
-        {% endif %}
     
 {% endblock %}

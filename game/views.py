@@ -56,3 +56,11 @@ def results_page(request, lobby_id):
         "num_players": len(player_list),
     }
     return HttpResponse(template.render(context, request))
+
+def lobbyselect_page(request, lobby_id):
+    lobby_list = [{"id": 12345}, {"id": 54321}, {"id": 23576}, {"id": 79840}]
+    template = loader.get_template("lobbyselect_page/index.html")
+    context = {
+        "lobby_list": lobby_list,
+    }
+    return HttpResponse(template.render(context, request))
