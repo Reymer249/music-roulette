@@ -43,11 +43,11 @@ AUTH_USER_MODEL = 'game.Users'
 
 INSTALLED_APPS = [
     'daphne',
-    "game",
-    "channels",
-    "channels_postgres",
-    "crispy_forms",
-    "crispy_bootstrap5",
+    'game',
+    'channels',
+    'channels_postgres',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,6 +72,16 @@ CHANNEL_LAYERS = {
             'HOST': DB_HOST,
             'PORT': DB_PORT,
         }
+    }
+}
+
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "my_cache_table",
     }
 }
 

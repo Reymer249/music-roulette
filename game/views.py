@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, logout, authenticate
-from .models import Parties
+from .models import Parties, UsersParties
 from .forms import RegisterForm
 
 
@@ -29,9 +29,23 @@ def create_party(request):
         # Create a new Parties record
         party = Parties.objects.create()
         # Redirect to the lobby page
-        return lobby_page(request, party.pid)
+        return redirect(f"/lobby/{party.pid}/")
     return main_page(request)  # Render the main page with the button
 
 
 def lobby_page(request, lobby_id):
-    return render(request, "lobby_page/index.html", {"lobby_id": lobby_id})
+    user = request.user
+    lobbies_with_id = Parties.objects.filter(pid=lobby_id)
+
+    # if the user is not authenticated or if the lobby no longer exists - send to main page
+    if not user.is_authenticated or not lobbies_with_id.count():
+        return redirect("/")
+
+    lobby = lobbies_with_id.first()
+
+    # count admins in lobby (might be 0)
+    is_admin = (UsersParties.objects.filter(party_id=lobby, is_admin=True).count() == 0)
+    # create a record in the database that the user joined the lobby
+    UsersParties.objects.create(party_id=lobby, user_id=user, is_admin=is_admin)
+
+    return render(request, "lobby_page/index.html", {"lobby_id": lobby_id, "is_admin": is_admin})

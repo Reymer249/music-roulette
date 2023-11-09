@@ -6,5 +6,5 @@ class GameConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'game'
 
-    def ready(self):
-        call_command('delete_userparties')
+    # def ready(self):
+    #     call_command('delete_userparties')

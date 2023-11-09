@@ -21,11 +21,15 @@
 
     <div id="messages"></div>
 
+    {% if is_admin %}
+        <button onclick="startGame()">Start Game</button>
+    {% endif %}
+
     {{ lobby_id|json_script:"lobby-id" }}
     <script type="text/javascript">
         const lobbyId = JSON.parse(document.getElementById('lobby-id').textContent);
 
-        const chatSocket = new WebSocket(
+        const rouletteSocket = new WebSocket(
             'ws://'
             + window.location.host
             + '/ws/lobby/'
@@ -33,8 +37,13 @@
             + '/'
         );
 
+        rouletteSocket.onclose = function (closeEvent)
+        {
+            window.location.href = '/';
+            console.log(closeEvent);
+        }
 
-        chatSocket.onmessage = function(e){
+        rouletteSocket.onmessage = function(e) {
             let data = JSON.parse(e.data);
             console.log('Data:', data);
 
@@ -44,17 +53,25 @@
                     messages.insertAdjacentHTML("beforeend", `<div><p>${data.message}</p></div>`)
                     break;
                 case "update_lobby_info":
-                    let players = document.getElementById("messages")
-                    players.innerHTML = data.players
+                    let players = document.getElementById("players")
+                    players.innerHTML = data.message
                     break;
+                case "new_round":
+                    alert("new round")
             }
+        }
+
+        function startGame() {
+            rouletteSocket.send(JSON.stringify({
+                "type": "start_game",
+            }));
         }
 
         let form = document.getElementById("form");
         form.addEventListener("submit", (e)=> {
             e.preventDefault();
             let message = e.target.message.value;
-            chatSocket.send(JSON.stringify({
+            rouletteSocket.send(JSON.stringify({
                 "type": "chat",
                 "message": message
             }));

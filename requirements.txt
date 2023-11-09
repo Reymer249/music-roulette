@@ -11,3 +11,5 @@ channels_postgres
 django-crispy-forms
 crispy-bootstrap5
 daphne
+celery
+redis
