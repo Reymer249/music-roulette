@@ -9,7 +9,7 @@ def game_process(lobby_id, lobby_group_id):
     print("GAME STARTS")
     round_cnt = 1
     round_num = 5
-    question_time = 15
+    question_time = 1
     layer = get_channel_layer()
 
     while round_cnt <= round_num:

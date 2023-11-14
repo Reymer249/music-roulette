@@ -20,6 +20,7 @@ DB_USER = os.getenv("DB_USER")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_PASS = os.getenv("DB_PASS")
+CELERY_PORT = os.getenv("CELERY_PORT")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,22 +62,17 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ASGI_APPLICATION = "musicroulette.asgi.application"
 
+CELERY_BROKER_URL = "redis://localhost:" + CELERY_PORT
+CELERY_RESULT_BACKEND = "redis://localhost:" + CELERY_PORT
+
 CHANNEL_LAYERS = {
     'default': {
-        "BACKEND": 'channels_postgres.core.PostgresChannelLayer',
+        "BACKEND": 'channels_redis.core.RedisChannelLayer',
         "CONFIG": {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': DB_NAME,
-            'USER': DB_USER,
-            'PASSWORD': DB_PASS,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
+            "hosts": [("127.0.0.1", 6379)],
         }
     }
 }
-
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 CACHES = {
     "default": {
@@ -127,13 +123,6 @@ DATABASES = {
         'HOST': DB_HOST,
         'PORT': DB_PORT,
     },
-    'channels_postgres': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DB_NAME,
-        'HOST': DB_HOST,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASS,
-    }
 }
 
 
