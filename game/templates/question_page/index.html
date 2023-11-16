@@ -31,7 +31,7 @@
     }
     .text-layer{
         position: absolute;
-        margin: 30px;
+        margin: 0px;
         width: 100%;
         height: 100vh;
         top: 0;
@@ -78,7 +78,7 @@
     }
 
     .quiz_box{
-        width: 550px;
+        width: 50vw;
         background: #fff;
         border-radius: 5px;
         transform: translate(-50%, -50%) scale(0.9);
@@ -90,8 +90,8 @@
     .quiz_box header{
         position: relative;
         z-index: 2;
-        height: 70px;
-        padding: 0 30px;
+        height: 8vh;
+        padding: 0 2vw;
         background: #fff;
         border-radius: 5px 5px 0 0;
         display: flex;
@@ -101,7 +101,7 @@
     }
 
     .quiz_box header .title{
-        font-size: 20px;
+        font-size: 2.5vmin;
         font-weight: 600;
     }
 
@@ -109,29 +109,29 @@
         color: #004085;
         background: #cce5ff;
         border: 1px solid #b8daff;
-        height: 45px;
-        padding: 0 8px;
+        height: 6vh;
+        padding: 0 1vh;
         border-radius: 5px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 145px;
+        width: 11vw;
     }
 
     .quiz_box header .timer .time_left_txt{
         font-weight: 400;
-        font-size: 17px;
+        font-size: 2.2vmin;
         user-select: none;
     }
 
     .quiz_box header .timer .timer_sec{
-        font-size: 18px;
+        font-size: 2.2vmin;
         font-weight: 500;
-        height: 30px;
-        width: 45px;
+        height: 3.5vh;
+        width: 3.3vw;
         color: #fff;
         border-radius: 5px;
-        line-height: 30px;
+        line-height: 3.5vh;
         text-align: center;
         background: #343a40;
         border: 1px solid #343a40;
@@ -140,9 +140,9 @@
 
     .quiz_box header .time_line{
         position: absolute;
-        bottom: 0px;
-        left: 0px;
-        height: 3px;
+        bottom: 0vh;
+        left: 0vw;
+        height: .3vh;
         background: #007bff;
     }
 
@@ -151,13 +151,8 @@
         background: #fff;
     }
 
-    section .que_text{
-        font-size: 25px;
-        font-weight: 600;
-    }
-
     section .option_list{
-        padding: 20px 0px;
+        padding: 3vh 1vw;
         display: block;   
     }
 
@@ -165,9 +160,9 @@
         background: aliceblue;
         border: 1px solid #84c5fe;
         border-radius: 5px;
-        padding: 8px 15px;
-        font-size: 17px;
-        margin-bottom: 15px;
+        padding: 1vh 1.5vw;
+        font-size: 2.3vmin;
+        margin-bottom: 2vh;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
@@ -176,7 +171,7 @@
     }
 
     section .option_list .option:last-child{
-        margin-bottom: 0px;
+        margin-bottom: 0vh;
     }
 
     section .option_list .option:hover{
@@ -214,15 +209,15 @@
     }
 
     section .option_list .option .icon{
-        height: 26px;
-        width: 26px;
+        height: 2.8vmin;
+        width: 2.8vmin;
         border: 2px solid transparent;
         border-radius: 50%;
         text-align: center;
-        font-size: 13px;
+        font-size: 1.4vmin;
         pointer-events: none;
         transition: all 0.3s ease;
-        line-height: 24px;
+        line-height: 2.7vmin;
     }
 
     .option_list .option .icon.correct{
@@ -244,8 +239,8 @@
     }
 
     footer{
-        height: 60px;
-        padding: 0 30px;
+        height: 7.5vh;
+        padding: 0 2vw;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -253,7 +248,8 @@
     }
 
     footer button{
-        height: 40px;
+        opacity: 0;
+        /*height: 40px;
         padding: 0 13px;
         font-size: 18px;
         font-weight: 400;
@@ -265,10 +261,9 @@
         background: #007bff;
         border: 1px solid #007bff;
         line-height: 10px;
-        opacity: 0;
         pointer-events: none;
         transform: scale(0.95);
-        transition: all 0.3s ease;
+        transition: all 0.3s ease;*/
     }
 
     footer button:hover{
@@ -337,70 +332,32 @@
             {
             numb: 1,
             question: "Whose song is this?",
-            answer: "Natalka",
-            options: [
-            "player_1",
-            "player_2",
-            "player_3",
-            "player_4"
-            ]
+            answer: "Natalka"
         },
             {
             numb: 2,
             question: "Whose song is this?",
-            answer: "Ivan",
-            options: [
-            "player_1",
-            "player_2",
-            "player_3",
-            "player_4"
-            ]
+            answer: "Ivan"
         },
             {
             numb: 3,
             question: "Whose song is this?",
-            answer: "player_1",
-            options: [
-            "player_1",
-            "player_2",
-            "player_3",
-            "player_4"
-            ]
+            answer: "Max"
         },
             {
             numb: 4,
             question: "Whose song is this?",
-            answer: "player_1",
-            options: [
-            "player_1",
-            "player_2",
-            "player_3",
-            "player_4"
-            ]
+            answer: "Carlos"
         },
             {
             numb: 5,
             question: "Whose song is this?",
-            answer: "player_1",
-            options: [
-            "player_1",
-            "player_2",
-            "player_3",
-            "player_4"
-            ]
+            answer: "Ivan"
         },
-        
-        
             {
             numb: 6,
             question: "Whose song is this?",
-            answer: "player_1",
-            options: [
-            "player_1",
-            "player_2",
-            "player_3",
-            "player_4"
-            ]
+            answer: "Carlos"
         },
         ]; 
 
@@ -414,7 +371,7 @@
         const option = option_list.querySelectorAll(".option");
         let option_copy = { ...option };
         const allOptions = option_list.children.length; //getting all option items
-        const que_length = allOptions * 3;
+        const que_length = questions.length;
         let questionTimeValue = 5;
         let answerTimeValue = 3;
 
@@ -656,7 +613,7 @@
                     timeText.textContent = "Time Left"; //change the time text to time off
                     titleText.textContent = "Whose song is this?"; //change the title text to whose song is this
 
-                    if(que_count < que_length - 1){ //if question count is less than total question length
+                    if(que_count < que_length-1){ //if question count is less than total question length
                         que_count++; //increment the que_count value
                         que_numb++; //increment the que_numb value
                         showQuetions(que_count); //calling showQestions function
@@ -688,18 +645,18 @@
                             }
                         }
                     }else{
-                        window.location.href = '/lobby/{{ lobby_id }}/results/';
+                        window.location.href = 'results/';
                     }
                 }
             }
         }
 
         function timerLine(time, value){
-            counterLine = setInterval(timer, value*2+1);
+            counterLine = setInterval(timer, value + 1);
             function timer(){
                 time += 1; //upgrading time value with 1
-                time_line.style.width = time + "px"; //increasing width of time_line with px by time value
-                if(time > 549){ //if time value is greater than 549
+                time_line.style.width = time/10 + "%"; //increasing width of time_line with px by time value
+                if(time > 999){ //if time value is greater than 50vw
                     clearInterval(counterLine); //clear counterLine
                 }
             }

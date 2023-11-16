@@ -63,10 +63,12 @@ def question_page(request, lobby_id):
 
 def results_page(request, lobby_id):
     player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"}, {"id": 13, "name": "Max"}, {"id": 14, "name": "Carlos"}]
+    result_list = [{"id": 11, "points": 100}, {"id": 12, "points": 90}, {"id": 13, "points": 80}, {"id": 14, "points": 70}]
     template = loader.get_template("results_page/index.html")
     context = {
         "lobby_id": lobby_id,
         "player_list": player_list,
+        "result_list": result_list,
         "num_players": len(player_list),
     }
     return HttpResponse(template.render(context, request))
