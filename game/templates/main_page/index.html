@@ -8,7 +8,6 @@ body{
     margin: 0px;
     height: 100%;
 }
-
 svg {
     position: fixed;
     top: 0;
@@ -16,7 +15,6 @@ svg {
     width: 100%;
     height: 100vh;
 }
-
 .wrap-layer{
     position: fixed;
     width: 100%;
@@ -42,69 +40,84 @@ svg {
     left: 0;
     z-index: 0;
 }
-h1 {
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
     position: absolute;
+    margin-left: 2vw;
+    width: 92vw;
+    height: 60vh;
+}
+h1 {
     color: rgb(89, 76, 173);
-    font-size: 90px;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    font-size: 7vw;
     text-align: center;
-    font-family: "Times New Roman", Times, serif;
+    margin-left: 1.5vw;
+    margin-top: 5vh;
     padding-top: 2%;
 }
-.host {
-    background: lavender;
-    position: absolute;
+.host{
+    position: relative;
     border: 2px hidden;
     border-radius: 15px;
-    width: 500px;
-    margin-top: 30%;
-    margin-left: 0%;
+    width: 55vmin;
+    height: 35vmin;
+    margin: auto;
+    font-size: 30px;
+    background: lavender;
 }
 .host_text {
-    position: absolute;
-    padding-top: 10%;
-    font-size: 40px;
+    padding-top: -5%;
+    padding-left: 2%;
+    padding-right: 2%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 4vmin;
     text-align: center;
     color: rgb(125, 81, 212);
 }
-
 .host_button {
-    position: absolute;
     margin-left: 15%;
-    margin-bottom: 0%;
+    margin-top: 0%;
     border: hidden;
-    font-size: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 6vmin;
     background: rgb(125, 81, 212);
-    width: 350px;
-    height: 70px;
+    width: 70%;
+    height: 25%;
     color: white;
     font-weight: bold;
 }
-.join {
-    position: absolute;
-    float: none;
-    margin-top: 30%;
-    margin-left: 50%;
+.join{
+    position: relative;
     border: 2px hidden;
     border-radius: 15px;
-    width: 500px;
+    width: 55vmin;
+    height: 35vmin;
+    margin: auto;
+    font-size: 30px;
     background: lavender;
 }
 .join_text {
-    position: absolute;
-    padding-top: 10%;
-    font-size: 40px;
+    padding-top: -5%;
+    padding-left: 2%;
+    padding-right: 2%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 4vmin;
     text-align: center;
     color: rgb(125, 81, 212);
 }
 .join_button {
-    position: absolute;
-    margin-left: 70px;
-    margin-bottom: 20px;
+    position: relative;
+    margin-left: 15%;
+    margin-top: 0%;
     border: hidden;
-    font-size: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 6vmin;
     background: rgb(125, 81, 212);
-    width: 350px;
-    height: 70px;
+    width: 70%;
+    height: 25%;
     color: white;
     font-weight: bold;
 }
@@ -113,30 +126,18 @@ h1 {
 {% endblock %}
 
 {% block body %}
-    <h1>Welcome to the Music Roulette</h1>
-    <div class="host">
-        <p class="host_text">Create your own game and invite others!</p>
-        <a href="/lobby/12345/">
-            <button class="host_button">Host Game</button>
-        </a>
+    <h1>Choose your lobby:</h1>
+
+    <div class="flex-container">
+        <div class="host">
+            <p class="host_text">Create your own game and invite others!</p>
+            <button class="host_button" onclick="location.href='/lobby/12345';">Host Game</button>
+        </div>
+    
+        <div class="join">
+            <p class="join_text">You got invited and have a game code?</p>
+            <button class="join_button" onclick="location.href='/lobby/lobbyselect/';">Join Game</button>
+        </div>
     </div>
 
-    <div class="join">
-        <p class="join_text">You got invited and have a game code?</p>
-        <a href="/lobby/54321/">
-            <button class="join_button">Join Game</button>
-        </a>
-    </div>
-    <!--
-        {% if lobby_list %}
-            <ul>
-            {% for lobby in lobby_list %}
-                <li><a href="/lobby/{{ lobby.id }}/">{{ lobby.id }}</a></li>
-            {% endfor %}
-            </ul>
-        {% else %}
-            <p>No lobbys running...</p>
-        {% endif %}
-        -->
-    
 {% endblock %}
