@@ -67,7 +67,7 @@ div.scroll {
     border-style: solid;
 }
 
-button{
+.button-lobby{
     display: flex;
     position: relative;
     padding: 3% 40%;
@@ -94,8 +94,19 @@ h2{
     font-family: 'Poppins', sans-serif;
     padding-bottom: 0%;
 }
-a{
-    text-decoration: none;
+.button-home{
+    margin-left: 42.5vw;
+    margin-top: 2vh;
+    border: hidden;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    font-size: 3vmin;
+    background: rgb(23, 145, 76);
+    width: 15vw;
+    height: 8vh;
+    color: rgb(218, 248, 218);
+    font-weight: bold;
+    border-radius: 15px;
+    transition: .5s;
 }
 </style>
 {% endblock %}
@@ -107,11 +118,13 @@ a{
 <div class="scroll">
 {% if lobby_list %}
     {% for lobby in lobby_list %}
-        <button onclick="location.href='/lobby/{{ lobby.id }}/';">{{ lobby.id }}</button>
+        <button class="button-lobby" onclick="location.href='/lobby/{{ lobby.id }}/';">{{ lobby.id }}</button>
     {% endfor %}
 {% else %}
     <p>No lobbys running...</p>
 {% endif %}
 </div>
+
+<button class="button-home" onclick="location.href='/';">Go Back to Home Screen</button>
 
 {% endblock %}
