@@ -133,10 +133,6 @@ div{
     {% else %}
         <p>Waiting for players to join</p>
     {% endif %}
-    <a href="/lobby/{{ lobby_id }}/question/">
-        <div>
-            <button>Start Game!</button>
-        </div>
-    </a>
+    <button onclick="location.href='/lobby/{{ lobby_id }}/question/';">Start Game!</button>
 
 {% endblock %}

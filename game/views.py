@@ -18,6 +18,13 @@ else:
 cur = con.cursor()
 
 
+def login_page(request):
+    template = loader.get_template("login_page/index.html")
+    context = {
+        "i": 1,
+    }
+    return HttpResponse(template.render(context, request))
+
 def main_page(request):
     lobby_list = [{"id": 12345}, {"id": 54321}, {"id": 23576}, {"id": 79840}]
     template = loader.get_template("main_page/index.html")
