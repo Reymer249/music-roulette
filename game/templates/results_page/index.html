@@ -8,7 +8,175 @@
 {% block colour_3 %}"#fcbc5d"{% endblock %}
 {% block colour_4 %}"#fcec5d"{% endblock %}
 
+{% block style %}
+<style>
+body{
+    margin: 0px;
+    height: 100%;
+}
+.wrap-layer{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+.text-layer{
+    position: absolute;
+    margin: 30px;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /*non-critical styles left out*/
+}
+.background-layer{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+h1{
+    font-size: 90px;
+    font-family: "Times New Roman", Times, serif;
+    text-align: center;
+    color: rgb(255, 87, 51);
+}
+h2{
+    font-size: 40px;
+    font-family: "Times New Roman", Times, serif;
+    text-align: center;
+    color: rgb(255, 87, 51); 
+    font-style: italic;
+}
+.buttons{
+    text-align: center;
+}
+button{
+    display:inline-block;
+    border-radius: 15px;
+    transition: .5s;
+    border: hidden;
+    font-weight: bold;
+}
+button:hover{
+    transform:scale(1.06);
+}
+.lobby_wrapper{
+    padding-top: 2%;
+}
+.lobby_button{
+    margin-bottom:2%;
+    font-size: 40px;
+    background: rgb(255, 116, 51);
+    color: rgb(240, 224, 204);
+    width: 500px;
+    height: 70px;
+}
+.home_button{
+    width: 300px;
+    height: 50px;
+    font-size:20px;
+    background: #fff185;
+    color: rgb(255, 116, 51);
+}
+.list{
+    position: relative;
+    width:300px;
+    margin: 4% auto 0;
+    padding: 0%;
+    box-sizing:border-box;
+    padding-bottom: 2%;
+}
+.list .dots{
+    display: flex;
+    background: white;
+    padding: 3% 44%;
+    color: orange;
+    margin: 10% 0;
+    transition: .5s;
+    font-size: 30px;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+}
+.score{
+    position: relative;
+    width:20px;
+    margin: 4% auto 0;
+    padding: 0%;
+    box-sizing:border-box;
+    padding-bottom: 2%;
+}
+.score .points{
+    display: flex;
+    padding: 60% 44%;
+    font-size: 50px;
+    font-weight: bolder;
+    text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
+    color: rgb(255, 116, 51);
+}
+.score_wrapper{
+    display: inline;
+    float: left;
+    margin-top: -15.6%;
+    padding-left: 60%;
+}
+.icons_wrapper{
+    float:left;
+    margin-top: -17.2%;
+    padding-left: 34%;
+}
+i{
+    font-size: 85px;
+    color: goldenrod;
+}
+.icon_list .icon{
+    display:flex;
+}
+</style>
+{% endblock %}
+
 {% block body %}
-    <h1>The winner is...</h1>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <h1>SCOREBOARD</h1>
+    <h2>The winner is...</h2>
+
+    {% if player_list %}
+        <ul class="list">
+        {% for player in player_list %}
+            <li class="dots">{{ player.name }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Waiting for players to join</p>
+    {% endif %}
+    <div class="score_wrapper">
+    <ul class="score">
+        <li class="points">50</li>
+        <li class="points">43</li>
+        <li class="points">39</li>
+    </ul>
+    </div>
+    <div class="icons_wrapper">
+        <ul class="icon_list">
+            <li class="icon"><i class="fa-solid fa-crown"></i></li>
+        </ul>
+    </div>
+    <div class="buttons">
+    <a href="/lobby/12345/">
+        <div class="lobby_wrapper">
+            <button class="lobby_button">Go Back to Lobby</button>
+        </div>
+    </a>
+    <a href="/">
+        <div class="home_wrapper">
+            <button class="home_button">Go Back to Home Screen</button>
+        </div>
+    </a>
+    </div>
     
 {% endblock %}

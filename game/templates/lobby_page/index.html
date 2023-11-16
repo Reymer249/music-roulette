@@ -80,14 +80,26 @@ ul li{
     align-items: center;
     justify-content: center;
 }
-button{
+.start_button{
     /*margin-left: 34.4%;*/
-    margin-bottom: 4%;
+    margin-bottom: 1%;
     border: hidden;
     font-size: 50px;
     background: rgb(1, 88, 88);
     width: 600px;
     height: 100px;
+    color: paleturquoise;
+    font-weight: bold;
+    border-radius: 15px;
+    transition: .5s;
+}
+.leave_button{
+    margin-bottom: 4%;
+    border: hidden;
+    font-size: 30px;
+    background: rgb(28, 153, 147);
+    width: 300px;
+    height: 50px;
     color: paleturquoise;
     font-weight: bold;
     border-radius: 15px;
@@ -117,7 +129,12 @@ div{
     {% endif %}
     <a href="/lobby/{{ lobby_id }}/question/">
         <div>
-            <button>Start Game!</button>
+            <button class = "start_button">Start Game!</button>
+        </div>
+    </a>
+    <a href="/lobby/12345/lobbyselect/">
+        <div>
+            <button class = "leave_button">Leave Lobby</button>
         </div>
     </a>
 

@@ -78,6 +78,25 @@ h2{
 a{
     text-decoration: none;
 }
+button{
+    margin-bottom: 4%;
+    border: hidden;
+    font-size: 30px;
+    background: rgb(23, 145, 76);
+    width: 400px;
+    height: 60px;
+    color: rgb(218, 248, 218);
+    font-weight: bold;
+    border-radius: 15px;
+    transition: .5s;
+}
+.button_wrapper{
+    text-align:center;
+    padding-top: 2%;
+}
+button:hover{
+    transform:scale(1.06);
+}
 </style>
 {% endblock %}
 
@@ -96,5 +115,11 @@ a{
     <p>No lobbys running...</p>
 {% endif %}
 </div>
+
+<a href="/">
+    <div class="button_wrapper">
+        <button>Go Back to Home Screen</button>
+    </div>
+</a>
 
 {% endblock %}
