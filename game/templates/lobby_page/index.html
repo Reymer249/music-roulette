@@ -1,82 +1,161 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Lobby page</title>
-</head>
-<body>
-    <h1>You Are In The Lobby #{{ lobby_id }}</h1>
+{% extends "../base/base.html" %}
 
-    <a href="/">Back to main menu</a>
+{% block title %}Lobby page{% endblock %}
 
-    <h2>Players</h2>
+{% block colour_0 %}"#3dccc7"{% endblock %}
+{% block colour_1 %}"#68d8d6"{% endblock %}
+{% block colour_2 %}"#9ceaef"{% endblock %}
+{% block colour_3 %}"#07beb8"{% endblock %}
+{% block colour_4 %}"#8cdedc"{% endblock %}
 
-    <p id="players"></p>
+{% block style %}
+<style>
+body{
+    margin: 0px;
+    height: 100%;
+}
+svg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+.wrap-layer{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+.text-layer{
+    position: absolute;
+    margin: 0px;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /*non-critical styles left out*/
+}
+.background-layer{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
 
-    <h2>Lobby chat</h2>
+h1{
+    font-size: 8vmin;
+    margin-top: -2vh;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    text-align: center;
+    color: rgb(1, 88, 88);
+}
+h2{
+    margin-top: 1vh;
+    font-size: 5vmin;
+    text-align: center;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    padding-top: 2%;
+    color: rgb(1, 88, 88);
+}
+h3{
+    margin-top: -2vh;
+    font-size: 3.5vmin;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: rgb(1, 88, 88);
+}
+ul{
+    position: relative;
+    width: 44vw;
+    height: 50vh;
+    margin-left: 28vw;
+    margin-top: -2vh;
+    padding: 0%;
+    box-sizing:border-box;
+    padding-bottom: 2%;
+    display: flex;
+    flex-direction: column;
+}
+.item{
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 20px;
+    background: paleturquoise;
+    padding: 0% 0%;
+    color: rgb(1, 88, 88);
+    margin: 1% 0;
+    transition: .5s;
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5vmin;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+}
+.buttons{
+    position: relative;
+    margin-top: 0vh;
+    box-sizing:border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.start_button{
+    margin-top: -3vh;
+    border: hidden;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    font-size: 6vmin;
+    background: rgb(1, 88, 88);
+    width: 30vw;
+    height: 10vh;
+    color: paleturquoise;
+    font-weight: bold;
+    border-radius: 15px;
+    transition: .5s;
+}
+.leave_button{
+    margin-top: 2vh;
+    border: hidden;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    font-size: 3vmin;
+    background: rgb(28, 153, 147);
+    width: 15vw;
+    height: 5vh;
+    color: paleturquoise;
+    font-weight: bold;
+    border-radius: 15px;
+    transition: .5s;
+}
+button:hover{
+    transform:scale(1.06);
+}
+div{
+    text-align:center;
+}
+</style>
+{% endblock %}
 
-    <form id="form">
-        <input type="text" name="message"/>
-    </form>
-
-    <div id="messages"></div>
-
-    {% if is_admin %}
-        <button onclick="startGame()">Start Game</button>
+{% block body %}
+    <h2>You Are In The Lobby</h2>
+    <h1>#{{ lobby_id }}</h1>
+    {% if player_list %}
+        <h3>Players joined:</h3>
+        <ul>
+        {% for player in player_list %}
+            <li class="item">{{ player.name }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Waiting for players to join</p>
     {% endif %}
-
-    {{ lobby_id|json_script:"lobby-id" }}
-    <script type="text/javascript">
-        const lobbyId = JSON.parse(document.getElementById('lobby-id').textContent);
-
-        const rouletteSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/lobby/'
-            + lobbyId
-            + '/'
-        );
-
-        rouletteSocket.onclose = function (closeEvent)
-        {
-            window.location.href = '/';
-            console.log(closeEvent);
-        }
-
-        rouletteSocket.onmessage = function(e) {
-            let data = JSON.parse(e.data);
-            console.log('Data:', data);
-
-            switch(data.type) {
-                case "chat":
-                    let messages = document.getElementById("messages")
-                    messages.insertAdjacentHTML("beforeend", `<div><p>${data.message}</p></div>`)
-                    break;
-                case "update_lobby_info":
-                    let players = document.getElementById("players")
-                    players.innerHTML = data.message
-                    break;
-                case "new_round":
-                    alert("new round")
-            }
-        }
-
-        function startGame() {
-            rouletteSocket.send(JSON.stringify({
-                "type": "start_game",
-            }));
-        }
-
-        let form = document.getElementById("form");
-        form.addEventListener("submit", (e)=> {
-            e.preventDefault();
-            let message = e.target.message.value;
-            rouletteSocket.send(JSON.stringify({
-                "type": "chat",
-                "message": message
-            }));
-            form.reset();
-        });
-    </script>
-</body>
-</html>
+    <div class="buttons">
+        <button class = "start_button" onclick="location.href='/lobby/{{ lobby_id }}/question/';">Start Game!</button>
+        <button class = "leave_button" onclick="location.href='/lobby/lobbyselect/';">Leave Lobby</button>
+    </div>
+{% endblock %}

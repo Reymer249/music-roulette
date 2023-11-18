@@ -1,0 +1,198 @@
+{% extends "../base/base.html" %}
+
+{% block title %}Whose song is this?{% endblock %}
+
+{% block colour_0 %}"#fccc5d"{% endblock %}
+{% block colour_1 %}"#fcdc5d"{% endblock %}
+{% block colour_2 %}"#fff185"{% endblock %}
+{% block colour_3 %}"#fcbc5d"{% endblock %}
+{% block colour_4 %}"#fcec5d"{% endblock %}
+
+{% block style %}
+<style>
+body{
+    margin: 0px;
+    height: 100%;
+}
+svg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+.wrap-layer{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+.text-layer{
+    position: absolute;
+    margin: 0px;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /*non-critical styles left out*/
+}
+.background-layer{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+h1{
+    font-size: 10.5vmin;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    text-align: center;
+    color: rgb(255, 87, 51);
+}
+h2{
+    margin-top: -3vh;
+    font-size: 4.5vmin;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    color: rgb(255, 87, 51);
+}
+
+.score_wrapper{
+    margin-top: -4vh;
+    margin-left: 25vw;
+    height: 45vh;
+    width: 50vw;
+    display: flex;
+    flex-direction: row;
+}
+
+.list{
+    position: relative;
+    width: 24vw;
+    height: 45vh;
+    margin-top: 0vh;
+    margin-left: 1vw;
+    box-sizing:border-box;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+}
+.list .dots{
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 20px;
+    background: white;
+    color: orange;
+    margin: 1%;
+    transition: .5s;
+    font-size: 4vmin;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.score{
+    position: relative;
+    width: 5vw;
+    height: 45vh;
+    margin-top: 0vh;
+    margin-left: 1vw;
+    box-sizing:border-box;
+    padding: 0%;
+    display: flex;
+    flex-direction: column;
+}
+.score .points{
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 20px;
+    margin: 1%;
+    transition: .5s;
+    font-size: 6vmin;
+    font-weight: bolder;
+    text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
+    color: rgb(255, 116, 51);
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+i{
+    margin-left: 4vw;
+    font-size: 7vw;
+    margin-top: 0vh;
+    color: goldenrod;
+}
+
+.buttons {
+    margin-top: 3vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+button{
+    display:inline-block;
+    border-radius: 15px;
+    transition: .5s;
+    border: hidden;
+    font-weight: bold;
+}
+button:hover{
+    transform:scale(1.06);
+}
+.lobby_button{
+    font-size: 5vmin;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    background: rgb(255, 116, 51);
+    color: rgb(240, 224, 204);
+    width: 36vw;
+    height: 8vh;
+    margin-top: 0vh;
+    margin-left: 32vw;
+}
+.home_button{
+    width: 30vw;
+    height: 7vh;
+    margin-top: 1.5vh;
+    margin-left: 35vw;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    font-size: 3vmin;
+    background: #fff185;
+    color: rgb(255, 116, 51);
+}
+</style>
+{% endblock %}
+
+{% block body %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <h1>SCOREBOARD</h1>
+    <h2>The winner is...</h2>
+
+    <div class="score_wrapper">
+        <i class="fa-solid fa-crown"></i>
+        <ul class="list">
+            {% for player in player_list %}
+                <li class="dots">{{ player.name }}</li>
+            {% endfor %}
+        </ul>
+        <ul class="score">
+            {% for result in result_list %}
+                <li class="points">{{ result.points }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="buttons">
+        <button class="lobby_button" onclick="location.href='/lobby/{{ lobby_id }}/';">Go Back to Lobby</button>
+        <button class="home_button" onclick="location.href='/';">Go Back to Home Screen</button>
+    </div>
+    
+{% endblock %}

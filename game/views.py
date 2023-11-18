@@ -6,6 +6,13 @@ from .models import Parties, UsersParties
 from .forms import RegisterForm
 
 
+def login_page(request):
+    template = loader.get_template("login_page/index.html")
+    context = {
+        "i": 1,
+    }
+    return HttpResponse(template.render(context, request))
+
 def main_page(request):
     lobby_ids = [lobby.pid for lobby in Parties.objects.all()]
     return render(request, "main_page/index.html", {"lobby_list": lobby_ids, "user": request.user})
@@ -32,20 +39,42 @@ def create_party(request):
         return redirect(f"/lobby/{party.pid}/")
     return main_page(request)  # Render the main page with the button
 
+def lobbyselect_page(request):
+    lobby_list = [{"id": 12345}, {"id": 54321}, {"id": 23576}, {"id": 79840}]
+    template = loader.get_template("lobbyselect_page/index.html")
+    context = {
+        "lobby_list": lobby_list,
+    }
+    return HttpResponse(template.render(context, request))
 
 def lobby_page(request, lobby_id):
-    user = request.user
-    lobbies_with_id = Parties.objects.filter(pid=lobby_id)
+    player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"}, {"id": 13, "name": "Max"}, {"id": 14, "name": "Carlos"}]
+    template = loader.get_template("lobby_page/index.html")
+    context = {
+        "lobby_id": lobby_id,
+        "player_list": player_list,
+        "num_players": len(player_list),
+    }
+    return HttpResponse(template.render(context, request))
 
-    # if the user is not authenticated or if the lobby no longer exists - send to main page
-    if not user.is_authenticated or not lobbies_with_id.count():
-        return redirect("/")
+def question_page(request, lobby_id):
+    player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"}, {"id": 13, "name": "Max"}, {"id": 14, "name": "Carlos"}]
+    template = loader.get_template("question_page/index.html")
+    context = {
+        "lobby_id": lobby_id,
+        "player_list": player_list,
+        "num_players": len(player_list),
+    }
+    return HttpResponse(template.render(context, request))
 
-    lobby = lobbies_with_id.first()
-
-    # count admins in lobby (might be 0)
-    is_admin = (UsersParties.objects.filter(party_id=lobby, is_admin=True).count() == 0)
-    # create a record in the database that the user joined the lobby
-    UsersParties.objects.create(party_id=lobby, user_id=user, is_admin=is_admin)
-
-    return render(request, "lobby_page/index.html", {"lobby_id": lobby_id, "is_admin": is_admin})
+def results_page(request, lobby_id):
+    player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"}, {"id": 13, "name": "Max"}, {"id": 14, "name": "Carlos"}]
+    result_list = [{"id": 11, "points": 100}, {"id": 12, "points": 90}, {"id": 13, "points": 80}, {"id": 14, "points": 70}]
+    template = loader.get_template("results_page/index.html")
+    context = {
+        "lobby_id": lobby_id,
+        "player_list": player_list,
+        "result_list": result_list,
+        "num_players": len(player_list),
+    }
+    return HttpResponse(template.render(context, request))

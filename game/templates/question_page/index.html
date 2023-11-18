@@ -1,0 +1,666 @@
+{% extends "../base/base.html" %}
+
+{% block title %}Guess time!{% endblock %}
+
+{% block style %}
+<style>
+    /* countdown */
+    @import "bourbon";
+
+    /* general */
+    body{
+        margin: 0px;
+        height: 100%;
+    }
+
+    svg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+    }
+
+    /* background blobs */
+    .wrap-layer{
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        top: 0;
+        left: 0;
+    }
+    .text-layer{
+        position: absolute;
+        margin: 0px;
+        width: 100%;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        /*non-critical styles left out*/
+    }
+    .background-layer{
+        position: absolute;
+        width: 100%;
+        height: 100vh;
+        top: 0%;
+        left: 0%;
+        z-index: 0;
+    }
+
+    /* quiz */
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    ::selection{
+        color: #fff;
+        background: #007bff;
+    }
+
+    .quiz_box{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 
+                    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .quiz_box.activeQuiz{
+        opacity: 1;
+        z-index: 5;
+        pointer-events: auto;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .quiz_box{
+        width: 50vw;
+        background: #fff;
+        border-radius: 5px;
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .quiz_box header{
+        position: relative;
+        z-index: 2;
+        height: 8vh;
+        padding: 0 2vw;
+        background: #fff;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0px 3px 5px 1px rgba(0,0,0,0.1);
+    }
+
+    .quiz_box header .title{
+        font-size: 2.5vmin;
+        font-weight: 600;
+    }
+
+    .quiz_box header .timer{
+        color: #004085;
+        background: #cce5ff;
+        border: 1px solid #b8daff;
+        height: 6vh;
+        padding: 0 1vh;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 11vw;
+    }
+
+    .quiz_box header .timer .time_left_txt{
+        font-weight: 400;
+        font-size: 2.2vmin;
+        user-select: none;
+    }
+
+    .quiz_box header .timer .timer_sec{
+        font-size: 2.2vmin;
+        font-weight: 500;
+        height: 3.5vh;
+        width: 3.3vw;
+        color: #fff;
+        border-radius: 5px;
+        line-height: 3.5vh;
+        text-align: center;
+        background: #343a40;
+        border: 1px solid #343a40;
+        user-select: none;
+    }
+
+    .quiz_box header .time_line{
+        position: absolute;
+        bottom: 0vh;
+        left: 0vw;
+        height: .3vh;
+        background: #007bff;
+    }
+
+    section{
+        padding: 25px 30px 20px 30px;
+        background: #fff;
+    }
+
+    section .option_list{
+        padding: 3vh 1vw;
+        display: block;   
+    }
+
+    section .option_list .option{
+        background: aliceblue;
+        border: 1px solid #84c5fe;
+        border-radius: 5px;
+        padding: 1vh 1.5vw;
+        font-size: 2.3vmin;
+        margin-bottom: 2vh;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    section .option_list .option:last-child{
+        margin-bottom: 0vh;
+    }
+
+    section .option_list .option:hover{
+        color: #004085;
+        background: #cce5ff;
+        border: 1px solid #b8daff;
+    }
+
+    section .option_list .option.selected{
+        color: #00346c;
+        background: #8ebcee;
+        border: 1px solid #82b9f3;
+    }
+    
+    section .option_list .option.correct{
+        color: #444849;
+        background: #e1e2e2;
+        border: 1px solid #c5c5c5;
+    }
+
+    section .option_list .option.selected.correct{
+        color: #155724;
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+    }
+
+    section .option_list .option.selected.incorrect{
+        color: #721c24;
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+
+    section .option_list .option.disabled{
+        pointer-events: none;
+    }
+
+    section .option_list .option .icon{
+        height: 2.8vmin;
+        width: 2.8vmin;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 1.4vmin;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        line-height: 2.7vmin;
+    }
+
+    .option_list .option .icon.correct{
+        color: #545454;
+        border-color: #545454;
+        background: #e1e2e2;
+    }
+
+    .option_list .option .icon.tick{
+        color: #23903c;
+        border-color: #23903c;
+        background: #d4edda;
+    }
+
+    .option_list .option .icon.cross{
+        color: #a42834;
+        background: #f8d7da;
+        border-color: #a42834;
+    }
+
+    footer{
+        height: 7.5vh;
+        padding: 0 2vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid lightgrey;
+    }
+
+    footer button{
+        opacity: 0;
+        /*height: 40px;
+        padding: 0 13px;
+        font-size: 18px;
+        font-weight: 400;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        color: #fff;
+        border-radius: 5px;
+        background: #007bff;
+        border: 1px solid #007bff;
+        line-height: 10px;
+        pointer-events: none;
+        transform: scale(0.95);
+        transition: all 0.3s ease;*/
+    }
+
+    footer button:hover{
+        background: #0263ca;
+    }
+
+    footer button.show{
+        opacity: 1;
+        pointer-events: auto;
+        transform: scale(1);
+    }
+</style>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+{% endblock %}
+
+
+{% block colour_0 %}"#6fcaeb"{% endblock %}
+{% block colour_1 %}"#81d1ee"{% endblock %}
+{% block colour_2 %}"#a5dff3"{% endblock %}
+{% block colour_3 %}"#54c0e8"{% endblock %}
+{% block colour_4 %}"#93d8f0"{% endblock %}
+
+
+
+{% block body %}
+    <!-- countdown -->
+    <svg width = "162" height = "163" viewBox="-162 -163 486 492" xmlns="http://www.w3.org/2000/svg">
+        <g id="numbers" fill="none" stroke="#0c58e5" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+            <path id="zero" d="M122.0935 35.4792L103.417 16H45.8173l-6.808 55.2633s26.0693-24.6445 49.2223-13.573c23.153 11.0718 28.5735 42.5957 13.2497 58.089-6.7267 6.801-13.994 13.0975-36.192 11.9657C43.0912 126.613 35 99.295 35 99.295l18.0092 18.1s6.735 17.1982 16.5437 24.0898c9.8085 6.8915 24.3125 9.1998 37.091 2.559 29.5167-15.34 28.0665-52.1296 1.9665-65.7712-26.1-13.6415-51.1888 12.0888-51.1888 12.0888l6.7675-54.8822h57.9043z"></path>
+        </g>
+    </svg>
+
+    <!-- Quiz Box -->
+    <div class="quiz_box">
+        <header>
+            <div class="title">Whose song is this?</div>
+            <div class="timer">
+                <div class="time_left_txt">Time Left</div>
+                <div class="timer_sec">05</div>
+            </div>
+            <div class="time_line"></div>
+        </header>
+
+        <section>
+            <div class="option_list">
+            {% for player in player_list %}
+                <div class="option"><span>{{ player.name }}</span></div>
+            {% endfor %}
+            </div>
+        </section>
+
+        <footer>
+            <button class="next_btn">Next Song</button>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TimelineMax.min.js"></script>
+
+    <script>
+        let questions = [
+            {
+            numb: 1,
+            question: "Whose song is this?",
+            answer: "Natalka"
+        },
+            {
+            numb: 2,
+            question: "Whose song is this?",
+            answer: "Ivan"
+        },
+            {
+            numb: 3,
+            question: "Whose song is this?",
+            answer: "Max"
+        },
+            {
+            numb: 4,
+            question: "Whose song is this?",
+            answer: "Carlos"
+        },
+            {
+            numb: 5,
+            question: "Whose song is this?",
+            answer: "Ivan"
+        },
+            {
+            numb: 6,
+            question: "Whose song is this?",
+            answer: "Carlos"
+        },
+        ]; 
+
+        //selecting all required elements
+        const quiz_box = document.querySelector(".quiz_box");
+        const titleText = document.querySelector(".quiz_box .title");
+        const option_list = document.querySelector(".option_list");
+        const time_line = document.querySelector("header .time_line");
+        const timeText = document.querySelector(".timer .time_left_txt");
+        const timeCount = document.querySelector(".timer .timer_sec");
+        const option = option_list.querySelectorAll(".option");
+        let option_copy = { ...option };
+        const allOptions = option_list.children.length; //getting all option items
+        const que_length = questions.length;
+        let questionTimeValue = 5;
+        let answerTimeValue = 3;
+
+        // countdown
+
+        // path array
+        var number = ["M31 93.3907L81.918 16h16.7775v110.7913l19.5336 20.9775V34.9362h-15.3084l-53.121 77.2553v11.894h83.0365l-20.2774-20.2774H31V93.3908z",
+        "M37.0342 37.6817S51.2687 7.707 79.7088 16.6743c8.6725 2.7344 24.575 14.6587 22.4358 30.4855-2.1393 15.8267-13.1684 20.775-13.1684 20.775s26.571 18.2613 13.1684 42.0846C95.8768 121.1607 86.112 127.486 66.027 127.486 45.9415 127.486 35 101.8853 35 101.8853l15.7454 15s10.134 34.134 45.0686 29.7208c16.13-2.0377 32.3926-20.6168 28.0143-39.2557-4.3782-18.639-19.1437-19.709-19.1437-19.709s16.129-7.1298 14.7655-25.8934C118.0864 42.9846 98.3537 32.681 84.7502 34.554c-25.4133 3.499-29.4394 21.685-29.4394 21.685l-18.2766-18.557z",
+        "M37 37.8676s10.1055-24.2898 37.181-22.802c27.0756 1.488 40.7335 28.0095 25.676 51.2668-15.0577 23.2573-61.5956 61.2517-61.5956 61.2517h69.7332L126.0424 147H53.9352s56.578-43.9928 66.574-66.5963c2.1922-4.9576 7.7702-18.274 0-31.545-7.7704-13.2714-23.272-16.2114-33.5493-15.1312-25.4584 2.6758-31.1116 23.9758-31.1116 23.9758L37 37.8676z",
+        "M66 16.9944C66 15.893 66.8998 15 68.0023 15h28.9954C98.1035 15 99 15.8955 99 16.9944v128.0112C99 146.107 98.1002 147 96.9977 147H68.0023C66.8965 147 66 146.1045 66 145.0056V16.9944z"];
+
+        // color array
+        var color = ["#069e2d", "#de7f11", "#a200fa", "#dc2f02"];
+
+        var num4 = true;
+        var num3 = true;
+        var num2 = true;
+        var num1 = true;
+
+        var tl = new TimelineMax();
+
+        tl.timeScale(1.05);
+
+        tl.set("#zero", {
+            transformOrigin: "center center",
+        });
+
+        for(var j = 0; j <= number.length; j++) {
+            tl
+                .to("#zero", .2, {
+                delay: .45,
+                scale: 1.02
+                })
+                .to("#zero", .1, {
+                scale: .98
+                })
+                .to("#zero", .2, {
+                delay: .45,
+                stroke: color[j],
+                scale: 1,
+                onStart: function() {
+                    document.getElementById("zero").removeAttribute("d");
+                    if(num4 && num3 && num2 && num1) {
+                        document.getElementById("zero").setAttribute("d", number[0]);
+                        num4 = false;
+                    }
+                    else if(num3 && num2 && num1) {
+                        document.getElementById("zero").setAttribute("d", number[1]);
+                        num3 = false;
+                    }
+                    else if(num2 && num1) {
+                        document.getElementById("zero").setAttribute("d", number[2]);
+                        num2 = false;
+                    }
+                    else if(num1) {
+                        document.getElementById("zero").setAttribute("d", number[3]);
+                        num1 = false;
+                    }
+                    else {
+                        quiz_box.classList.add("activeQuiz"); //show quiz box
+                        showQuetions(0); //calling showQestions function
+                        questionTimer(questionTimeValue); //calling questionTimer function
+                        timerLine(0, questionTimeValue); //calling timerLine function
+                    }
+                },
+                },
+                );
+        }
+
+        // quiz
+    
+        let que_count = 0;
+        let que_numb = 1;
+        let userScore = 0;
+        let counter;
+        let counterLine;
+        let widthValue = 0;
+        
+        const next_btn = document.querySelector("footer .next_btn");
+        
+        // getting questions and options from array
+        function showQuetions(index){
+            // set onclick attribute to all available options
+            for(i=0; i < allOptions; i++){
+                option[i].setAttribute("onclick", "optionSelected(this)");
+            }
+        }
+        // creating the new div tags which for icons
+        let correctIconTag = '<div id="correct_icon" class="icon correct"><i class="fas fa-check"></i></div>';
+        let tickIconTag = '<div id="tick_icon" class="icon tick"><i class="fas fa-check"></i></div>';
+        let crossIconTag = '<div id="cross_icon" class="icon cross"><i class="fas fa-times"></i></div>';
+        
+        //if user clicked on option
+        function optionSelected(answer){
+            /*clearInterval(counter); //clear counter
+            clearInterval(counterLine); //clear counterLine*/
+            let userAns = answer.textContent; //getting user selected option
+            let correcAns = questions[que_count].answer; //getting correct answer from array
+            const allOptions = option_list.children.length; //getting all option items
+            
+            //disselect previous option
+            for(i=0; i < allOptions; i++){
+                if(option_list.children[i].classList.contains("selected")){
+                    option_list.children[i].classList.remove("selected");
+                }
+            }
+
+            answer.classList.add("selected"); //mark option as selected
+        }
+
+       /*
+       // if Next Que button clicked
+        next_btn.onclick = ()=>{
+            if(que_count < que_length - 1){ //if question count is less than total question length
+                que_count++; //increment the que_count value
+                que_numb++; //increment the que_numb value
+                showQuetions(que_count); //calling showQestions function
+                clearInterval(counter); //clear counter
+                clearInterval(counterLine); //clear counterLine
+                questionTimer(questionTimeValue); //calling questionTimer function
+                timerLine(widthValue, questionTimeValue); //calling timerLine function
+                timeText.textContent = "Time Left"; //change the timeText to Time Left
+                next_btn.classList.remove("show"); //hide the next button
+                for(i=0; i < allOptions; i++){
+                    option_list.children[i].classList.remove("disabled"); //when the time starts enable all options
+                }
+                // empty previous options
+                for(i=0; i < allOptions; i++){
+                    if(option_list.children[i].classList.contains("selected")) {
+                        option_list.children[i].classList.remove("selected")
+                        if(option_list.children[i].classList.contains("correct")){
+                            option_list.children[i].classList.remove("correct");
+                            let cur_tag = document.getElementById("tick_icon");
+                            option_list.children[i].removeChild(cur_tag);
+                        }
+                        else if(option_list.children[i].classList.contains("incorrect")){
+                            option_list.children[i].classList.remove("incorrect");
+                            let cur_tag = document.getElementById("cross_icon");
+                            option_list.children[i].removeChild(cur_tag); // removing cross icon
+                        }
+                    }
+                    else if(option_list.children[i].classList.contains("correct")){
+                        option_list.children[i].classList.remove("correct");
+                        let cur_tag = document.getElementById("correct_icon");
+                        option_list.children[i].removeChild(cur_tag); // removing correct icon
+                    }
+                }
+            }else{
+                clearInterval(counter); //clear counter
+                clearInterval(counterLine); //clear counterLine
+                window.location.href = '/lobby/{{ lobby_id }}/results/';
+            }
+        }
+        */
+        
+        function questionTimer(time){
+            counter = setInterval(timer, 1000);
+            function timer(){
+                timeCount.textContent = time; //changing the value of timeCount with time value
+                time--; //decrement the time value
+                if(time < 9){ //if timer is less than 9
+                    let addZero = timeCount.textContent; 
+                    timeCount.textContent = "0" + addZero; //add a 0 before time value
+                }
+                if(time < 0){ //if timer is less than 0
+                    clearInterval(counter); //clear counter
+                    clearInterval(counterLine); //clear counterLine
+                    timeText.textContent = "Next question in"; //change the time text to next question in
+                    titleText.textContent = "The song belongs to..."; //change the title text to the song belongs to
+
+                    let userAns = option_list.children[0].textContent;
+                    let user_answer = option_list.children[0];
+                    let correcAns = questions[que_count].answer; //getting correct answer from array
+                    let selectedOption = false;
+
+                    //getting user selected option
+                    for(let i=0; i < allOptions; i++){
+                        if(option_list.children[i].classList.contains("selected")){
+                            selectedOption = true;
+                            userAns = option_list.children[i].textContent;
+                            user_answer = option_list.children[i];
+                        }
+                    }
+                    
+                    //if user selected any option
+                    if(selectedOption){
+                        if(userAns == correcAns){ //if user selected option is equal to array's correct answer
+                            userScore += 1; //upgrading score value with 1
+                            user_answer.classList.add("correct"); //adding green color to correct selected option
+                            user_answer.insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to correct selected option
+                            console.log("Correct Answer");
+                            console.log("Your correct answers = " + userScore);
+                        }else{
+                            user_answer.classList.add("incorrect"); //adding red color to correct selected option
+                            user_answer.insertAdjacentHTML("beforeend", crossIconTag); //adding cross icon to correct selected option
+                            console.log("Wrong Answer");
+                    
+                            for(i=0; i < allOptions; i++){
+                                if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer 
+                                    option_list.children[i].classList.add("correct"); //adding green color to matched option
+                                    option_list.children[i].insertAdjacentHTML("beforeend", correctIconTag); //adding tick icon to matched option
+                                    console.log("Auto selected correct answer.");
+                                }
+                            }
+                        }
+                    }
+                    // if user did not select any option
+                    else{
+                        for(i=0; i < allOptions; i++){
+                            if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer
+                                option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
+                                option_list.children[i].insertAdjacentHTML("beforeend", correctIconTag); //adding tick icon to matched option
+                                console.log("Time Off: Auto selected correct answer.");
+                            }
+                        }
+                    }
+                    for(i=0; i < allOptions; i++){
+                        option_list.children[i].classList.add("disabled"); //once the time is up disable all options
+                    }
+                    answerTimer(answerTimeValue); //calling answerTimer function
+                    timerLine(widthValue, answerTimeValue) //calling timerLine function
+                    time_line.style.background = "#ff7b00";
+                }
+            }
+        }
+
+        function answerTimer(time){
+            counter = setInterval(timer, 1000);
+            function timer(){
+                timeCount.textContent = time; //changing the value of timeCount with time value
+                time--; //decrement the time value
+                if(time < 9){ //if timer is less than 9
+                    let addZero = timeCount.textContent; 
+                    timeCount.textContent = "0" + addZero; //add a 0 before time value
+                }
+                if(time < 0){ //if timer is less than 0
+                    clearInterval(counter); //clear counter
+                    clearInterval(counterLine); //clear counterLine
+                    timeText.textContent = "Time Left"; //change the time text to time off
+                    titleText.textContent = "Whose song is this?"; //change the title text to whose song is this
+
+                    if(que_count < que_length-1){ //if question count is less than total question length
+                        que_count++; //increment the que_count value
+                        que_numb++; //increment the que_numb value
+                        showQuetions(que_count); //calling showQestions function
+                        time_line.style.background = "#007bff"; //switch to questionTimer style
+                        questionTimer(questionTimeValue); //calling questionTimer function
+                        timerLine(widthValue, questionTimeValue); //calling timerLine function
+                        for(i=0; i < allOptions; i++){
+                            option_list.children[i].classList.remove("disabled"); //when the time starts enable all options
+                        }
+                        // empty previous options
+                        for(i=0; i < allOptions; i++){
+                            if(option_list.children[i].classList.contains("selected")) {
+                                option_list.children[i].classList.remove("selected")
+                                if(option_list.children[i].classList.contains("correct")){
+                                    option_list.children[i].classList.remove("correct");
+                                    let cur_tag = document.getElementById("tick_icon");
+                                    option_list.children[i].removeChild(cur_tag);
+                                }
+                                else if(option_list.children[i].classList.contains("incorrect")){
+                                    option_list.children[i].classList.remove("incorrect");
+                                    let cur_tag = document.getElementById("cross_icon");
+                                    option_list.children[i].removeChild(cur_tag); // removing cross icon
+                                }
+                            }
+                            else if(option_list.children[i].classList.contains("correct")){
+                                option_list.children[i].classList.remove("correct");
+                                let cur_tag = document.getElementById("correct_icon");
+                                option_list.children[i].removeChild(cur_tag); // removing correct icon
+                            }
+                        }
+                    }else{
+                        window.location.href = 'results/';
+                    }
+                }
+            }
+        }
+
+        function timerLine(time, value){
+            counterLine = setInterval(timer, value + 1);
+            function timer(){
+                time += 1; //upgrading time value with 1
+                time_line.style.width = time/10 + "%"; //increasing width of time_line with px by time value
+                if(time > 999){ //if time value is greater than 50vw
+                    clearInterval(counterLine); //clear counterLine
+                }
+            }
+        }
+
+    </script>
+{% endblock %}
