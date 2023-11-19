@@ -3,14 +3,28 @@ from django.template import loader
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, logout, authenticate
 from .models import Parties, UsersParties
-from .forms import RegisterForm
+from .forms import LoginForm
 
 
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect("/main-page")
+
     template = loader.get_template("login_page/index.html")
     context = {
-        "i": 1,
+        "form": LoginForm(),
+        "errors": None
     }
+
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("/main-page")
+        else:
+            context["errors"] = form.errors
+
     return HttpResponse(template.render(context, request))
 
 def main_page(request):
@@ -18,17 +32,17 @@ def main_page(request):
     return render(request, "main_page/index.html", {"lobby_list": lobby_ids, "user": request.user})
 
 
-def sign_up(request):
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("/")
-    else:
-        form = RegisterForm()
-
-    return render(request, "registration/sign_up.html", {"form": form})
+# def sign_up(request):
+#     if request.method == "POST":
+#         form = RegisterForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return redirect("/")
+#     else:
+#         form = RegisterForm()
+#
+#     return render(request, "registration/sign_up.html", {"form": form})
 
 
 def create_party(request):

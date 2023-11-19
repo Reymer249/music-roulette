@@ -3,7 +3,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Users(AbstractUser):
-    spotify_link = models.CharField(max_length=100, null=False, unique=True)
+    username = models.CharField(primary_key=True)
+    spotify_link = models.URLField(max_length=1000, null=False, unique=False)
 
 
 class Parties(models.Model):

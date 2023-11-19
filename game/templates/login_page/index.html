@@ -95,12 +95,18 @@ div{
 
 {% block body %}
     <h1>Welcome to Music Roulette!</h1>
+    {% if errors %}
+      <ul class="errorlist">
+        {% for error_field, error_description in errors.items %}
+          <li>{{ error_description }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
     <div class="login-box">
-        <input type="text" placeholder="username"/>
-        <input type="text" placeholder="spotify account"/>
-    </div>
-    <div>
-    <button onclick="location.href='/main+page';">Play</button>
+        <form method="post">
+            {% csrf_token %}{{ form }}
+            <button type="submit">Play!</button>
+        </form>
     </div>
     <img src="https://media.tenor.com/gXMtMCZ5WccAAAAd/cat-head-bump-cat-nodding.gif" style="margin-top:5vh;width:20vh;height:20vh;">
 
