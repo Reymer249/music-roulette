@@ -28,21 +28,7 @@ def login_page(request):
     return HttpResponse(template.render(context, request))
 
 def main_page(request):
-    lobby_ids = [lobby.pid for lobby in Parties.objects.all()]
-    return render(request, "main_page/index.html", {"lobby_list": lobby_ids, "user": request.user})
-
-
-# def sign_up(request):
-#     if request.method == "POST":
-#         form = RegisterForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect("/")
-#     else:
-#         form = RegisterForm()
-#
-#     return render(request, "registration/sign_up.html", {"form": form})
+    return render(request, "main_page/index.html", {})
 
 
 def create_party(request):
@@ -54,10 +40,10 @@ def create_party(request):
     return main_page(request)  # Render the main page with the button
 
 def lobbyselect_page(request):
-    lobby_list = [{"id": 12345}, {"id": 54321}, {"id": 23576}, {"id": 79840}]
+    lobby_ids = [lobby.pid for lobby in Parties.objects.all()]
     template = loader.get_template("lobbyselect_page/index.html")
     context = {
-        "lobby_list": lobby_list,
+        "lobby_list": lobby_ids,
     }
     return HttpResponse(template.render(context, request))
 
