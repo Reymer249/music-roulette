@@ -9,7 +9,6 @@ from .tasks import game_process
 
 class LobbyConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("connected")
         # Get user from the JWT token sent in the connection request
         self.user = await get_user(self.scope)
 
@@ -69,7 +68,7 @@ class LobbyConsumer(AsyncWebsocketConsumer):
                     game_process.delay(self.lobby_id, self.lobby_group_id)
             case "answer":
                 # cache the answer
-                cache.set(f"lobby_{self.lobby_id}_user_{self.user.id}_answer", text_data_json["answer"])
+                cache.set(f"lobby_{self.lobby_id}_user_{self.user.uid}_answer", text_data_json["answer"])
 
     async def get_usernames(self):
         # a function to get all the usernames of the players in the group
@@ -78,7 +77,7 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         )()
         usernames = await database_sync_to_async(
             lambda: Users.objects.filter(
-                id__in=[up.user_id.id for up in user_parties]
+                uid__in=[up.user_id for up in user_parties]
             ).values_list('username', flat=True)
         )()
         return await database_sync_to_async(lambda: list(usernames))()
