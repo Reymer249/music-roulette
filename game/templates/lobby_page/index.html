@@ -148,14 +148,16 @@ div{
         <h3>Players joined:</h3>
         <ul>
         {% for player in player_list %}
-            <li class="item">{{ player.name }}</li>
+            <li class="item">{{ player.username }}</li>
         {% endfor %}
         </ul>
     {% else %}
         <p>Waiting for players to join</p>
     {% endif %}
     <div class="buttons">
+        {% if userParty %}
         <button class = "start_button" onclick="location.href='/lobby/{{ lobby_id }}/question/';">Start Game!</button>
-        <button class = "leave_button" onclick="location.href='/lobby/lobbyselect/';">Leave Lobby</button>
+        {% endif %}
+        <button class = "leave_button" onclick="location.href='/main-page/';">Leave Lobby</button>
     </div>
 {% endblock %}

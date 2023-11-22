@@ -9,6 +9,7 @@ from .tasks import game_process
 
 class LobbyConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print("connected")
         # Get user from the JWT token sent in the connection request
         self.user = await get_user(self.scope)
 
@@ -25,11 +26,15 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         # update player list for everybody in the lobby
         await self.channel_layer.group_send(self.lobby_group_id, {"type": "update_lobby_info"})
         # await self.update_lobby_info()
+        print(self.user)
+        print(self.lobby)
+        print(self.lobby_group_id)
+        print(self.lobby_id)
 
     async def disconnect(self, close_code):
         # delete the user-lobby connection records
         await self.channel_layer.group_discard(self.lobby_group_id, self.channel_name)
-        await database_sync_to_async(lambda: UsersParties.objects.filter(user_id=self.user).delete())()
+        await database_sync_to_async(lambda: UsersParties.objects.filter(user=self.user).delete())()
 
         await self.channel_layer.group_send(self.lobby_group_id, {"type": "update_lobby_info"})
 
