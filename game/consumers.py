@@ -25,10 +25,6 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         # update player list for everybody in the lobby
         await self.channel_layer.group_send(self.lobby_group_id, {"type": "update_lobby_info"})
         # await self.update_lobby_info()
-        print(self.user)
-        print(self.lobby)
-        print(self.lobby_group_id)
-        print(self.lobby_id)
 
     async def disconnect(self, close_code):
         # delete the user-lobby connection records

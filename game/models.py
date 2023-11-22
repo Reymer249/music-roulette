@@ -16,10 +16,3 @@ class UsersParties(models.Model):
     party = models.ForeignKey(Parties, on_delete=models.CASCADE)
     user = models.OneToOneField(Users, on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
-
-
-class Messages(models.Model):
-    # TODO: handle time of the message so we can filter
-    mid = models.AutoField(primary_key=True)
-    party = models.ForeignKey(Parties, db_column="messages", on_delete=models.CASCADE)
-    text = models.CharField(max_length=500)
