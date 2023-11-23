@@ -52,19 +52,20 @@ h1{
     font-size: 7vw;
     text-align: center;
     margin-left: 1.5vw;
-    margin-top: 7vh;
+    margin-top: 5vh;
     padding-top: 2%;
 }
 div.scroll {
     padding: 2%;
     width: 50vw;
-    height: 47vh;
+    height: 40vh;
     overflow-x: hidden;
     overflow-y: auto;
     margin-left: 24vw;
-    margin-top: -3vh;
+    margin-top: -3vmin;
     border-color:rgb(29, 88, 55);
     border-style: solid;
+    text-align: center;
 }
 
 .button-lobby{
@@ -79,6 +80,7 @@ div.scroll {
     transition: .5s;
     font-size: 4vmin;
     border-radius: 15px;
+    text-align: center;
 }
 
 button:hover{
@@ -88,21 +90,26 @@ button:hover{
 h2{
     text-align: center;
     font-size: 4vmin;
-    padding-top: 2%;
-    margin-top: -5vh;
+    margin-top: -5vmin;
     color:rgb(29, 88, 55);
     font-family: 'Poppins', sans-serif;
-    padding-bottom: 0%;
+}
+.buttons{
+    position: relative;
+    margin-top: 0vh;
+    box-sizing:border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .button-home{
-    margin-left: 42.5vw;
     margin-top: 2vh;
     border: hidden;
     font-family: 'Fredoka One', "Times New Roman", Times, serif;
-    font-size: 3vmin;
+    font-size: 5vmin;
     background: rgb(23, 145, 76);
-    width: 15vw;
-    height: 8vh;
+    width: 30vw;
     color: rgb(218, 248, 218);
     font-weight: bold;
     border-radius: 15px;
@@ -125,6 +132,8 @@ h2{
 {% endif %}
 </div>
 
-<button class="button-home" onclick="location.href='/';">Go Back to Home Screen</button>
+<div class="buttons">
+    <button class="button-home" onclick="location.href='/';">Go Back to Home Screen</button>
+</div>
 
 {% endblock %}
