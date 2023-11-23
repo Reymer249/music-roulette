@@ -46,6 +46,34 @@ svg {
     left: 0;
     z-index: 0;
 }
+h0{
+    position: fixed;
+    font-size: 1.7vmin;
+    top: 0vh;
+    left: 0vw;
+    width: 12vw;
+    height: 5vh;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background-color: rgb(219, 242, 255);
+    color:rgb(0, 0, 0);
+    border-right: .1vw solid rgb(29, 51, 190);
+}
+.logout_button{
+    position: fixed;
+    top: 5vh;
+    left: 0vw;
+    font-size: 1.7vmin;
+    width: 12.1vw;
+    font-family: 'Poppins', sans-serif;
+    background-color: rgb(29, 51, 190);
+    color:#ffffff;
+    border: none;
+    border-radius: 0 0 15px 0;
+}
+.logout_button:hover{
+    transform:scale(1);
+}
 
 h1 {
     color: rgb(29, 51, 190);
@@ -73,7 +101,7 @@ input {
     font-size: 3vmin;
     color: rgb(29, 78, 156);
 }
-button{
+.play_button{
     margin-top: 2vh;
     border: hidden;
     font-family: 'Fredoka One', "Times New Roman", Times, serif;
@@ -86,7 +114,7 @@ button{
     border-radius: 15px;
     transition: .5s;
 }
-button:hover{
+.play_button:hover{
     transform:scale(1.06);
 }
 div{
@@ -112,9 +140,12 @@ form{
     <div class="login-box">
         <form method="post">
             {% csrf_token %}{{ form }}
-            <button type="submit">Play!</button>
+            <button class="play_button" type="submit">Play!</button>
         </form>
     </div>
     <img src="https://media.tenor.com/gXMtMCZ5WccAAAAd/cat-head-bump-cat-nodding.gif" style="margin-top:5vh;width:20vh;height:20vh;">
 
+{% endblock %}
+
+{% block logout_button %}
 {% endblock %}

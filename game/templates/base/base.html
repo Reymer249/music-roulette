@@ -46,6 +46,31 @@
                 left: 0;
                 z-index: 0;
             }
+            h0{
+                position: fixed;
+                font-size: 1.7vmin;
+                top: 0vh;
+                left: 0vw;
+                width: 12vw;
+                height: 5vh;
+                font-family: 'Poppins', sans-serif;
+                text-align: center;
+                background-color: lavender;
+                color:rgb(0, 0, 0);
+                border-right: .1vw solid rgb(125, 81, 212);
+            }
+            .logout_button{
+                position: fixed;
+                top: 5vh;
+                left: 0vw;
+                font-size: 1.7vmin;
+                width: 12.1vw;
+                font-family: 'Poppins', sans-serif;
+                background-color: rgb(125, 81, 212);
+                color:#ffffff;
+                border: none;
+                border-radius: 0 0 15px 0;
+            }
         </style>
     {% endblock %}
     
@@ -57,6 +82,11 @@
             {% endblock %}
 
             {% block script %}
+            {% endblock %}
+            
+            {% block logout_button %}
+            <h0>You have logged in as {{ request.user.username }}</h0>
+            <button class="logout_button" onclick="location.href='/logout'">Log out</button>
             {% endblock %}
         </div>
         <div class="background-layer">
