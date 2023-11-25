@@ -160,7 +160,7 @@ h3{
 <div class="scroll">
 {% if lobby_list %}
     {% for lobby in lobby_list %}
-        <button class="button-lobby" onclick="location.href='/lobby/{{ lobby.id }}/';">{{ lobby.id }}</button>
+        <button class="button-lobby" onclick="location.href='/lobby/{{ lobby }}/';">{{ lobby }}</button>
     {% endfor %}
 {% else %}
     <h3>No lobbys running...</h3>

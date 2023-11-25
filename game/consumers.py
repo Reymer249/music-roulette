@@ -16,7 +16,7 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         self.lobby_group_id = "lobby_%s" % self.lobby_id
 
         # get the lobby object
-        self.lobby = await database_sync_to_async(lambda: Parties.objects.get(pid=self.lobby_id))()
+        self.lobby = await database_sync_to_async(lambda: Parties.objects.get(id=self.lobby_id))()
 
         # add channel to a group
         await self.channel_layer.group_add(self.lobby_group_id, self.channel_name)
@@ -24,7 +24,6 @@ class LobbyConsumer(AsyncWebsocketConsumer):
 
         # update player list for everybody in the lobby
         await self.channel_layer.group_send(self.lobby_group_id, {"type": "update_lobby_info"})
-        # await self.update_lobby_info()
 
     async def disconnect(self, close_code):
         # delete the user-lobby connection records
@@ -39,8 +38,7 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         )()
         # if no players left - delete the lobby
         if not players_left:
-            await database_sync_to_async(lambda: Parties.objects.get(pid=self.lobby_id).delete())()
-
+            await database_sync_to_async(lambda: Parties.objects.get(id=self.lobby_id).delete())()
 
     async def receive(self, text_data=None, **kwargs):
         # parce the received data
@@ -64,24 +62,24 @@ class LobbyConsumer(AsyncWebsocketConsumer):
                     game_process.delay(self.lobby_id, self.lobby_group_id)
             case "answer":
                 # cache the answer
-                cache.set(f"lobby_{self.lobby_id}_user_{self.user.uid}_answer", text_data_json["answer"])
+                cache.set(f"lobby_{self.lobby_id}_user_{self.user.id}_answer", text_data_json["answer"])
 
-    async def get_usernames(self):
-        # a function to get all the usernames of the players in the group
+    async def get_names(self):
+        # a function to get all the names of the players in the group
         user_parties = await database_sync_to_async(
             lambda: UsersParties.objects.filter(party_id=self.lobby_id)
         )()
-        usernames = await database_sync_to_async(
+        names = await database_sync_to_async(
             lambda: Users.objects.filter(
-                uid__in=[up.user_id for up in user_parties]
-            ).values_list('username', flat=True)
+                id__in=[up.user_id for up in user_parties]
+            ).values_list('name', flat=True)
         )()
-        return await database_sync_to_async(lambda: list(usernames))()
+        return await database_sync_to_async(lambda: list(names))()
 
     async def update_lobby_info(self, event):
         # send the user the updated user list
-        username_list = await self.get_usernames()
-        await self.send(text_data=json.dumps({"type": "update_lobby_info", "message": username_list}))
+        name_list = await self.get_names()
+        await self.send(text_data=json.dumps({"type": "update_lobby_info", "message": name_list}))
     
     async def chat_message(self, event):
         message = event["message"]

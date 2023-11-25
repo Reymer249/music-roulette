@@ -3,13 +3,12 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Users(AbstractUser):
-    uid = models.AutoField(primary_key=True)
-    username = models.CharField(unique=True)
-    spotify_link = models.URLField(max_length=1000, null=False, unique=False)
+    name = models.CharField(unique=False)
+    spotify_link = models.URLField(max_length=1000, null=False)
 
 
 class Parties(models.Model):
-    pid = models.AutoField(primary_key=True)
+    pass
 
 
 class UsersParties(models.Model):

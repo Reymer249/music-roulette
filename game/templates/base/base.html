@@ -85,7 +85,7 @@
             {% endblock %}
             
             {% block logout_button %}
-            <h0>You have logged in as {{ request.user.username }}</h0>
+            <h0>You have logged in as {{ request.user.name }}</h0>
             <button class="logout_button" onclick="location.href='/logout'">Log out</button>
             {% endblock %}
         </div>

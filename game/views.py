@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import login, logout, authenticate
 from .models import Parties, UsersParties, Users
 from .forms import LoginForm
+import random
 
 
 def login_page(request):
@@ -19,6 +20,7 @@ def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
+            form.instance.username = f'{random.randrange(1000000000)}'
             user = form.save()
             login(request, user)
             return redirect("/main-page")
@@ -26,6 +28,7 @@ def login_page(request):
             context["errors"] = form.errors
 
     return HttpResponse(template.render(context, request))
+
 
 def main_page(request):
     if not request.user.is_authenticated:
@@ -42,42 +45,45 @@ def create_party(request):
     new_party.save()
 
     # Redirect to the lobby page
-    return redirect(f"/lobby/{new_party.pid}/")
+    return redirect(f"/lobby/{new_party.id}/")
 
 def lobbyselect_page(request):
     if not request.user.is_authenticated:
         return redirect("/")
 
-    lobby_ids = [lobby.pid for lobby in Parties.objects.all()]
+    lobby_ids = [lobby.id for lobby in Parties.objects.all()]
     template = loader.get_template("lobbyselect_page/index.html")
-    context = {
-        "lobby_list": lobby_ids,
-    }
+    context = {"lobby_list": lobby_ids}
     return HttpResponse(template.render(context, request))
+
 
 def lobby_page(request, lobby_id):
     if not request.user.is_authenticated:
         return redirect("/")
 
-    # Create a new UsersParties record
-    party = Parties.objects.filter(pid=lobby_id)[0]
-    is_admin = (len(UsersParties.objects.filter(party=party)) == 1)
     user = request.user
-    userParty = UsersParties(
+    UsersParties.objects.filter(user=user).delete()
+
+    # Create a new UsersParties record
+    parties = Parties.objects.filter(id=lobby_id)
+    # check whether party exists DO NOT TOUCH MAX
+    if not parties.count():
+        return redirect("/")
+    party = parties[0]
+    is_admin = (len(UsersParties.objects.filter(party=party)) == 1)
+    user_party = UsersParties(
         party=party,
         user=user,
         is_admin=is_admin
     )
-    userParty.save()
+    user_party.save()
 
     # Get names of the players in the party
-    player_list = Users.objects.filter(usersparties__party=party.pid).values('username')
+    player_list = Users.objects.filter(usersparties__party=party.id).values('name')
     template = loader.get_template("lobby_page/index.html")
     context = {
         "lobby_id": lobby_id,
-        "player_list": player_list,
-        "num_players": len(player_list),
-        "userParty": userParty,
+        "user_party": user_party,
     }
     return HttpResponse(template.render(context, request))
 

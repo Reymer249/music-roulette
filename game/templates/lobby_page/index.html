@@ -172,18 +172,12 @@ div{
 {% block body %}
     <h2>You Are In The Lobby</h2>
     <h1>#{{ lobby_id }}</h1>
-    {% if player_list %}
-        <h3>Players joined:</h3>
-        <ul>
-        {% for player in player_list %}
-            <li class="item">{{ player.username }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>Waiting for players to join</p>
-    {% endif %}
+
+    <h3>Players joined:</h3>
+    <ul id="players"></ul>
+
     <div class="buttons">
-        {% if userParty %}
+        {% if user_party %}
         <button class = "start_button" onclick="location.href='/lobby/{{ lobby_id }}/question/';">Start Game!</button>
         {% endif %}
         <button class = "leave_button" onclick="location.href='/main-page/';">Leave Lobby</button>
@@ -214,11 +208,12 @@ div{
             switch(data.type) {
                 case "chat":
                     let messages = document.getElementById("messages")
-                    messages.insertAdjacentHTML("beforeend", `<div><p>${data.message}</p></div>`)
+                    messages.insertAdjacentHTML("beforeend", `<div><p>${data.message}</p></div>`);
                     break;
                 case "update_lobby_info":
-                    let players = document.getElementById("players")
-                    players.innerHTML = data.message
+                    let players = document.getElementById("players");
+                    const liList = data.message.map(str => "<li class='item'>" + str + '</li>')
+                    players.innerHTML = liList.join("");
                     break;
                 case "new_round":
                     alert("new round")
