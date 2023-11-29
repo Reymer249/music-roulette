@@ -1,15 +1,3 @@
-{% extends "../base/base.html" %}
-
-{% block title %}Lobby Selection{% endblock %}
-
-{% block colour_0 %}"#3DCC80"{% endblock %}
-{% block colour_1 %}"#68D89E"{% endblock %}
-{% block colour_2 %}"#9CEFCB"{% endblock %}
-{% block colour_3 %}"#07BE5D"{% endblock %}
-{% block colour_4 %}"#8CDEB3"{% endblock %}
-
-{% block style %}
-<style>
 body{
     margin: 0px;
     height: 100%;
@@ -150,25 +138,3 @@ h3{
     border-radius: 15px;
     transition: .5s;
 }
-</style>
-{% endblock %}
-
-{% block body %}
-<h1>Choose your lobby:</h1>
-<h2>Currently active Lobbies:</h2>
-
-<div class="scroll">
-{% if lobby_list %}
-    {% for lobby in lobby_list %}
-        <button class="button-lobby" onclick="location.href='/lobby/{{ lobby }}/';">{{ lobby }}</button>
-    {% endfor %}
-{% else %}
-    <h3>No lobbys running...</h3>
-{% endif %}
-</div>
-
-<div class="buttons">
-    <button class="button-home" onclick="location.href='/';">Go Back to Home Screen</button>
-</div>
-
-{% endblock %}

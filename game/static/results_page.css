@@ -1,15 +1,3 @@
-{% extends "../base/base.html" %}
-
-{% block title %}Whose song is this?{% endblock %}
-
-{% block colour_0 %}"#fccc5d"{% endblock %}
-{% block colour_1 %}"#fcdc5d"{% endblock %}
-{% block colour_2 %}"#fff185"{% endblock %}
-{% block colour_3 %}"#fcbc5d"{% endblock %}
-{% block colour_4 %}"#fcec5d"{% endblock %}
-
-{% block style %}
-<style>
 body{
     margin: 0px;
     height: 100%;
@@ -150,7 +138,7 @@ h2{
     border-radius: 15px;
     align-items: center;
     justify-content: center;
-    
+
 }
 
 i{
@@ -202,31 +190,3 @@ i{
     border: hidden;
     font-weight: bold;
 }
-</style>
-{% endblock %}
-
-{% block body %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <h1>SCOREBOARD</h1>
-    <h2>The winner is...</h2>
-
-    <div class="score_wrapper">
-        <i class="fa-solid fa-crown"></i>
-        <ul class="list">
-            {% for player in player_list %}
-                <li class="dots">{{ player.name }}</li>
-            {% endfor %}
-        </ul>
-        <ul class="score">
-            {% for result in result_list %}
-                <li class="points">{{ result.points }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="buttons">
-        <button class="lobby_button" onclick="location.href='/lobby/{{ lobby_id }}/';">Go Back to Lobby</button>
-        <button class="home_button" onclick="location.href='/';">Go Back to Home Screen</button>
-    </div>
-    
-{% endblock %}

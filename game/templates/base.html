@@ -9,69 +9,8 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
     {% block style %}
-        <style>
-            body{
-                margin: 0px;
-                height: 100%;
-            }
-            svg {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-            }
-            .wrap-layer{
-                position: fixed;
-                width: 100%;
-                height: 100vh;
-                top: 0;
-                left: 0;
-            }
-            .text-layer{
-                position: absolute;
-                margin: 30px;
-                width: 100%;
-                height: 100vh;
-                top: 0;
-                left: 0;
-                z-index: 1;
-                /*non-critical styles left out*/
-            }
-            .background-layer{
-                position: absolute;
-                width: 100%;
-                height: 100vh;
-                top: 0;
-                left: 0;
-                z-index: 0;
-            }
-            h0{
-                position: fixed;
-                font-size: 1.7vmin;
-                top: 0vh;
-                left: 0vw;
-                width: 12vw;
-                height: 5vh;
-                font-family: 'Poppins', sans-serif;
-                text-align: center;
-                background-color: lavender;
-                color:rgb(0, 0, 0);
-                border-right: .1vw solid rgb(125, 81, 212);
-            }
-            .logout_button{
-                position: fixed;
-                top: 5vh;
-                left: 0vw;
-                font-size: 1.7vmin;
-                width: 12.1vw;
-                font-family: 'Poppins', sans-serif;
-                background-color: rgb(125, 81, 212);
-                color:#ffffff;
-                border: none;
-                border-radius: 0 0 15px 0;
-            }
-        </style>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'base.css' %}" type="text/css"/>
     {% endblock %}
     
 </head>
@@ -86,7 +25,7 @@
             
             {% block logout_button %}
             <h0>You have logged in as {{ request.user.name }}</h0>
-            <button class="logout_button" onclick="location.href='/logout'">Log out</button>
+            <button class="logout_button" onclick="location.href='/logout/'">Log out</button>
             {% endblock %}
         </div>
         <div class="background-layer">

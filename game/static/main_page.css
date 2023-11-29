@@ -1,9 +1,3 @@
-{% extends "../base/base.html" %}
-
-{% block title %}Play Music Roulette{% endblock %}
-
-{% block style %}
-<style>
 body{
     margin: 0px;
     height: 100%;
@@ -155,23 +149,3 @@ button:hover{
     transform:scale(1.06);
     transition: .5s;
 }
-
-</style>
-{% endblock %}
-
-{% block body %}
-    <h1>Choose your lobby:</h1>
-
-    <div class="flex-container">
-        <div class="host">
-            <p class="host_text">Create your own game and invite others!</p>
-            <button class="host_button" onclick="location.href='/create-party';">Host Game</button>
-        </div>
-    
-        <div class="join">
-            <p class="join_text">You got invited and have a game code?</p>
-            <button class="join_button" onclick="location.href='/lobby/lobbyselect/';">Join Game</button>
-        </div>
-    </div>
-
-{% endblock %}

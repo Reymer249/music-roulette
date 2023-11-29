@@ -39,6 +39,11 @@ ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1']
 
 AUTH_USER_MODEL = 'game.Users'
 
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_URL = '/logout'
+LOGOUT_REDIRECT_URL = LOGIN_URL
+
 
 # Application definition
 
