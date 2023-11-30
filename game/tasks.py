@@ -11,8 +11,8 @@ def game_process(lobby_id, game_group_id):
     print("GAME STARTS")
 
     round_num = 5
-    question_time = 10
-    answer_time = 5
+    question_time = 5
+    answer_time = 3
     ws_wait_time = 2
     start_wait_time = 6
 
@@ -43,7 +43,7 @@ def game_process(lobby_id, game_group_id):
         # TODO: select songs (Carlos)
         profile_links = {player.id: player.user.spotify_link for player in player_list}
         spotify_link = "https://open.spotify.com/embed/track/2UuOcNP8dU5nVq57ABxzIo?utm_source=generator"
-        answer = 1  # the id of the selected song player
+        answer = 2  # the id of the selected song player
         # TODO: end select songs (Carlos)
 
         # send group the message about starting a new round

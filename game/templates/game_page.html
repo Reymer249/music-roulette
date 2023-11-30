@@ -37,7 +37,7 @@
         </header>
 
         <section>
-            <div id="optionList"></div>
+            <div id="option_list"></div>
         </section>
 
         <footer>
@@ -111,7 +111,7 @@
                     playerNames = data.player_names;
                     optionNum = playerIDs.length;
 
-                    let players = document.getElementById("optionList");
+                    let players = document.getElementById("option_list");
                     for (let i = 0; i < playerIDs.length; i++) {
                         let liElement = document.createElement('div');
                         liElement.innerHTML = "<span>" + playerNames[i] + "</span>";
@@ -218,7 +218,7 @@
         // set onclick attribute to all available options
         function showQuetions(){
             for(let i = 0; i < optionNum; i++){
-                const optionList = document.getElementById("optionList");
+                const optionList = document.getElementById("option_list");
                 const option = optionList.getElementsByClassName("option");
                 option[i].setAttribute("onclick", "optionSelected(this)");
             }
@@ -244,24 +244,13 @@
             answer.classList.add("selected"); //mark option as selected
         }
 
-        function questionTimer(time){
-            timeCount.textContent = time;
-            counter = setInterval(timer, 1000);
-            function timer(){
-                timeCount.textContent = time; //changing the value of timeCount with time value
-                time--; //decrement the time value
-                if(time < 9){ //if timer is less than 9
-                    let addZero = timeCount.textContent; 
-                    timeCount.textContent = "0" + addZero; //add a 0 before time value
-                }
-                if(time < 0){ //if timer is less than 0
-
-                }
+        function numericTimer(time){
+            timeCount.textContent = time; //changing the value of timeCount with time value
+            time--; //decrement the time value
+            if(time < 9){ //if timer is less than 9
+                let addZero = timeCount.textContent;
+                timeCount.textContent = "0" + addZero; //add a 0 before time value
             }
-        }
-
-        function answerTimer(time){
-            timeCount.textContent = time;
             counter = setInterval(timer, 1000);
             function timer(){
                 timeCount.textContent = time; //changing the value of timeCount with time value
@@ -269,15 +258,12 @@
                 if(time < 9){ //if timer is less than 9
                     let addZero = timeCount.textContent; 
                     timeCount.textContent = "0" + addZero; //add a 0 before time value
-                }
-                if(time < 0){ //if timer is less than 0
-
                 }
             }
         }
 
         function timerLine(time, value){
-            counterLine = setInterval(timer, value);
+            counterLine = setInterval(timer, value + 1);
             function timer(){
                 time += 1; //upgrading time value with 1
                 time_line.style.width = time/10 + "%"; //increasing width of time_line with px by time value
@@ -295,11 +281,11 @@
 
             const optionList = document.getElementById("option_list");
 
-            if(roundCnt < roundNum - 1){ //if round count is less than total round number
+            if(roundCnt < roundNum){ //if round count is less than total round number
                 roundCnt++; //increment the roundCnt value
                 showQuetions(); //calling showQestions function
-                time_line.style.background = "#007bff"; //switch to questionTimer style
-                questionTimer(questionTimeValue); //calling questionTimer function
+                time_line.style.background = "#007bff"; //switch to numericTimer style
+                numericTimer(questionTimeValue); //calling numericTimer function
                 timerLine(widthValue, questionTimeValue); //calling timerLine function
                 for(let i = 0; i < optionNum; i++){
                     optionList.children[i].classList.remove("disabled"); //when the time starts enable all options
@@ -367,7 +353,7 @@
                     console.log("Wrong Answer");
 
                     for(let i = 0; i < optionNum; i++){
-                        if(optionList.children[i].textContent === roundAnswer){ //if there is an option which is matched to an array answer
+                        if(optionList.children[i].id === roundAnswer){ //if there is an option which is matched to an array answer
                             optionList.children[i].classList.add("correct"); //adding green color to matched option
                             optionList.children[i].insertAdjacentHTML("beforeend", correctIconTag); //adding tick icon to matched option
                             console.log("Auto selected correct answer.");
@@ -378,7 +364,7 @@
             // if user did not select any option
             else{
                 for(let i = 0; i < optionNum; i++){
-                    if(optionList.children[i].textContent === roundAnswer){ //if there is an option which is matched to an array answer
+                    if(optionList.children[i].id === roundAnswer){ //if there is an option which is matched to an array answer
                         optionList.children[i].setAttribute("class", "correct"); //adding green color to matched option
                         optionList.children[i].insertAdjacentHTML("beforeend", correctIconTag); //adding tick icon to matched option
                         console.log("Time Off: Auto selected correct answer.");
@@ -389,7 +375,7 @@
             for(let i = 0; i < optionNum; i++){
                 optionList.children[i].classList.add("disabled"); //once the time is up disable all options
             }
-            answerTimer(answerTimeValue); //calling answerTimer function
+            numericTimer(answerTimeValue); //calling numericTimer function
             timerLine(widthValue, answerTimeValue) //calling timerLine function
             time_line.style.background = "#ff7b00";
         }
