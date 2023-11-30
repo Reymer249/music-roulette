@@ -147,8 +147,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                                               "spotify_link": spotify_link}))
 
     async def correct_ans(self, event):
-        answer = event["answer"]
-        await self.send(text_data=json.dumps({"type": "correct_ans", "answer": answer}))
+        answer = event["correct_ans"]
+        await self.send(text_data=json.dumps({"type": "correct_ans", "correct_ans": answer}))
 
     async def game_results(self, event):
         await self.send(text_data=json.dumps({"type": "game_results"}))

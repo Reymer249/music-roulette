@@ -22,7 +22,7 @@ def game_process(lobby_id, game_group_id):
     scores = {player.id: 0 for player in player_list}
 
     # wait the users to establish a websocket connection while 5 sec game countdown ticks
-    time.sleep(start_wait_time - ws_wait_time)
+    time.sleep(ws_wait_time)
 
     async_to_sync(layer.group_send)(
         game_group_id,
@@ -35,7 +35,7 @@ def game_process(lobby_id, game_group_id):
     )
 
     # wait the rest of the 5 sec game countdown
-    time.sleep(ws_wait_time)
+    time.sleep(start_wait_time - ws_wait_time)
 
     while round_cnt <= round_num:
         print("NEW ROUND")
@@ -73,7 +73,7 @@ def game_process(lobby_id, game_group_id):
             game_group_id,
             {
                 "type": "correct_ans",
-                "answer": answer
+                "correct_ans": answer
             }
         )
 

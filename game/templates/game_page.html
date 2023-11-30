@@ -107,8 +107,8 @@
                 case "init":
                     // get number of rounds, player list
                     playerIDs = data.player_ids;
-                    roundNum = data.round_num;
                     playerNames = data.player_names;
+                    roundNum = data.round_num;
                     optionNum = playerIDs.length;
 
                     let players = document.getElementById("option_list");
@@ -263,7 +263,7 @@
         }
 
         function timerLine(time, value){
-            counterLine = setInterval(timer, value + 1);
+            counterLine = setInterval(timer, value);
             function timer(){
                 time += 1; //upgrading time value with 1
                 time_line.style.width = time/10 + "%"; //increasing width of time_line with px by time value
@@ -341,9 +341,11 @@
                 "answer": userAns
             }));
 
+            console.log(userAns + "   " + 'p' + roundAnswer)
+
             //if user selected any option
             if(selectedOption){
-                if(userAns === roundAnswer){ //if the selected option is equal to the correct answer
+                if(userAns === 'p' + roundAnswer){ //if the selected option is equal to the correct answer
                     user_answer.classList.add("correct"); //adding green color to correct selected option
                     user_answer.insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to correct selected option
                     console.log("Correct Answer");
