@@ -34,34 +34,6 @@ svg {
     left: 0;
     z-index: 0;
 }
-h0{
-    position: fixed;
-    font-size: 1.7vmin;
-    top: 0vh;
-    left: 0vw;
-    width: 12vw;
-    height: 5vh;
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    background-color: rgb(219, 242, 255);
-    color:rgb(0, 0, 0);
-    border-right: .1vw solid rgb(29, 51, 190);
-}
-.logout_button{
-    position: fixed;
-    top: 5vh;
-    left: 0vw;
-    font-size: 1.7vmin;
-    width: 12.1vw;
-    font-family: 'Poppins', sans-serif;
-    background-color: rgb(29, 51, 190);
-    color:#ffffff;
-    border: none;
-    border-radius: 0 0 15px 0;
-}
-.logout_button:hover{
-    transform:scale(1);
-}
 
 h1 {
     color: rgb(29, 51, 190);
@@ -73,6 +45,7 @@ h1 {
     padding-top: 2%;
 }
 .login-box {
+    font-family: 'Poppins', sans-serif;
     margin: auto;
     margin-top: 10vh;
     width: 60vw;
@@ -110,6 +83,18 @@ div{
 }
 form{
     font-family: 'Poppins', sans-serif;
-    font-size: 2.7vmin;
+    font-size: 1.5vw;
     color: rgb(19, 69, 149);
+}
+.errorlist{
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.8vmin;
+    color: rgb(19, 69, 149);
+    list-style-type: none;
+    width: 90vw;
+    height: 0vh;
+    text-align: center;
+}
+li{
+    text-align: center;
 }

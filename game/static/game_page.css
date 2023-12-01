@@ -1,3 +1,5 @@
+/* countdown */
+
 /* general */
 body{
     margin: 0px;
@@ -37,6 +39,34 @@ svg {
     top: 0%;
     left: 0%;
     z-index: 0;
+}
+h0{
+    position: fixed;
+    font-size: 1.7vmin;
+    top: 0vh;
+    left: 0vw;
+    width: 12vw;
+    height: 5vh;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background-color: rgb(217, 229, 251);
+    color:rgb(0, 0, 0);
+    border-right: .1vw solid #007bff;
+}
+.logout_button{
+    position: fixed;
+    top: 5vh;
+    left: 0vw;
+    font-size: 1.7vmin;
+    width: 12.1vw;
+    font-family: 'Poppins', sans-serif;
+    background-color: #007bff;
+    color:#ffffff;
+    border: none;
+    border-radius: 0 0 15px 0;
+}
+.logout_button:hover{
+    transform:scale(1);
 }
 
 /* quiz */
@@ -265,34 +295,4 @@ footer button.show{
     opacity: 1;
     pointer-events: auto;
     transform: scale(1);
-}
-
-h0{
-    position: fixed;
-    font-size: 1.7vmin;
-    top: 0vh;
-    left: 0vw;
-    width: 12vw;
-    height: 5vh;
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    background-color: lavender;
-    color:rgb(0, 0, 0);
-    border-right: .1vw solid rgb(125, 81, 212);
-}
-
-.logout_button{
-    position: fixed;
-    top: 5vh;
-    left: 0vw;
-    font-size: 1.7vmin;
-    width: 12.1vw;
-    font-family: 'Poppins', sans-serif;
-    background-color: rgb(125, 81, 212);
-    color:#ffffff;
-    border: none;
-    border-radius: 0 0 15px 0;
-}
-.logout_button:hover{
-    transform:scale(1);
 }
