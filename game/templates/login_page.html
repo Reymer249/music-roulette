@@ -2,6 +2,11 @@
 
 {% block title %}Login page{% endblock %}
 
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'login_page.css' %}" type="text/css"/>
+{% endblock %}
+
 {% block colour_0 %}"#7cc6fe"{% endblock %}
 {% block colour_1 %}"#f9b4ed"{% endblock %}
 {% block colour_2 %}"#7fdeff"{% endblock %}

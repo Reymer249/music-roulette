@@ -66,7 +66,6 @@ class LobbyConsumer(AsyncWebsocketConsumer):
                     ).count()
                 )():
                     print("STARTING GAME")
-                    self.game_started = True
 
                     # send users to the game page
                     await self.channel_layer.group_send(self.lobby_group_id, {"type": "start_game"})
@@ -94,6 +93,7 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"type": "chat", "message": message}))
 
     async def start_game(self, event):
+        self.game_started = True
         await self.send(text_data=json.dumps({"type": "start_game"}))
 
 

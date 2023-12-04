@@ -4,6 +4,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render
 from django.contrib.auth import login
 from .models import Parties, UsersParties
+from django.core.cache import cache
 from .forms import LoginForm
 import random
 
@@ -111,15 +112,18 @@ def results_page(request, lobby_id):
     if not request.user.is_authenticated:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
-    player_list = [{"id": 11, "name": "Natalka"}, {"id": 12, "name": "Ivan"},
-                   {"id": 13, "name": "Max"}, {"id": 14, "name": "Carlos"}]
-    result_list = [{"id": 11, "points": 100}, {"id": 12, "points": 90},
-                   {"id": 13, "points": 80}, {"id": 14, "points": 70}]
+    player_list = [up.user for up in UsersParties.objects.filter(party_id=lobby_id)]
+
+    # get scores from django cache
+    scores = cache.get(f"lobby_{lobby_id}_scores")
+
+    name_score_list = [{"name": player.name, "score": scores[player.id]} for player in player_list]
+
+    print(name_score_list)
+
     template = loader.get_template("results_page.html")
     context = {
         "lobby_id": lobby_id,
-        "player_list": player_list,
-        "result_list": result_list,
-        "num_players": len(player_list),
+        "name_score_list": name_score_list
     }
     return HttpResponse(template.render(context, request))

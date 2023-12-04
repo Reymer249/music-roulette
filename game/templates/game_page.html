@@ -147,6 +147,8 @@
 
         // countdown
 
+        countdownTimer();
+
         // path array
         var number = ["M31 93.3907L81.918 16h16.7775v110.7913l19.5336 20.9775V34.9362h-15.3084l-53.121 77.2553v11.894h83.0365l-20.2774-20.2774H31V93.3908z",
         "M37.0342 37.6817S51.2687 7.707 79.7088 16.6743c8.6725 2.7344 24.575 14.6587 22.4358 30.4855-2.1393 15.8267-13.1684 20.775-13.1684 20.775s26.571 18.2613 13.1684 42.0846C95.8768 121.1607 86.112 127.486 66.027 127.486 45.9415 127.486 35 101.8853 35 101.8853l15.7454 15s10.134 34.134 45.0686 29.7208c16.13-2.0377 32.3926-20.6168 28.0143-39.2557-4.3782-18.639-19.1437-19.709-19.1437-19.709s16.129-7.1298 14.7655-25.8934C118.0864 42.9846 98.3537 32.681 84.7502 34.554c-25.4133 3.499-29.4394 21.685-29.4394 21.685l-18.2766-18.557z",
@@ -156,57 +158,22 @@
         // color array
         var color = ["#069e2d", "#de7f11", "#a200fa", "#dc2f02"];
 
-        var num4 = true;
-        var num3 = true;
-        var num2 = true;
-        var num1 = true;
-
-        var tl = new TimelineMax();
-
-        tl.timeScale(1);
-
-        tl.set("#zero", {
-            transformOrigin: "center center",
-        });
-
-        for(let j = 0; j <= number.length; j++) {
-            tl
-                .to("#zero", .2, {
-                delay: .45,
-                scale: 1.02
-                })
-                .to("#zero", .1, {
-                scale: .98
-                })
-                .to("#zero", .2, {
-                delay: .45,
-                stroke: color[j],
-                scale: 1,
-                onStart: function() {
+        function countdownTimer(){
+            let time = -1; //initial time
+            counter = setInterval(timer, 1000);
+            function timer(){
+                time++; //increment the time value
+                if(time >= number.length){ //if timer is greater than number of paths
+                    clearInterval(counter); //clear counter
+                    quiz_box.classList.add("activeQuiz"); //show quiz box
+                    showQuetions(); //calling showQestions function
+                }
+                else {
                     document.getElementById("zero").removeAttribute("d");
-                    if(num4 && num3 && num2 && num1) {
-                        document.getElementById("zero").setAttribute("d", number[0]);
-                        num4 = false;
-                    }
-                    else if(num3 && num2 && num1) {
-                        document.getElementById("zero").setAttribute("d", number[1]);
-                        num3 = false;
-                    }
-                    else if(num2 && num1) {
-                        document.getElementById("zero").setAttribute("d", number[2]);
-                        num2 = false;
-                    }
-                    else if(num1) {
-                        document.getElementById("zero").setAttribute("d", number[3]);
-                        num1 = false;
-                    }
-                    else {
-                        quiz_box.classList.add("activeQuiz"); //show quiz box
-                        showQuetions(); //calling showQestions function
-                    }
-                },
-                },
-                );
+                    document.getElementById("zero").setAttribute("d", number[time]);
+                    document.getElementById("numbers").setAttribute("stroke", color[time]);
+                }
+            }
         }
 
 
@@ -264,6 +231,7 @@
 
         function timerLine(time, value){
             counterLine = setInterval(timer, value);
+            console.log(value);
             function timer(){
                 time += 1; //upgrading time value with 1
                 time_line.style.width = time/10 + "%"; //increasing width of time_line with px by time value
@@ -333,18 +301,18 @@
                 }
             }
 
-            let userAns = user_answer.id;
-
-            // send the answer through the websocket
-            rouletteSocket.send(JSON.stringify({
-                "type": "answer",
-                "answer": userAns
-            }));
-
-            console.log(userAns + "   " + 'p' + roundAnswer)
-
             //if user selected any option
             if(selectedOption){
+                let userAns = user_answer.id;
+
+                // send the answer through the websocket
+                rouletteSocket.send(JSON.stringify({
+                    "type": "answer",
+                    "answer": userAns
+                }));
+
+                console.log(userAns + "   " + 'p' + roundAnswer)
+
                 if(userAns === 'p' + roundAnswer){ //if the selected option is equal to the correct answer
                     user_answer.classList.add("correct"); //adding green color to correct selected option
                     user_answer.insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to correct selected option
