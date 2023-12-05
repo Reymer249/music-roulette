@@ -35,7 +35,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1']
+ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1', 'localhost']
 
 AUTH_USER_MODEL = 'game.Users'
 
