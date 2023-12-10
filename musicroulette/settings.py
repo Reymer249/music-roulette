@@ -15,12 +15,13 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_PASS = os.getenv("DB_PASS")
-REDIS_PORT = os.getenv("REDIS_PORT")
+DB_NAME = os.environ.get("POSTGRES_NAME")
+DB_USER = os.environ.get("POSTGRES_USER")
+DB_HOST = os.environ.get("POSTGRES_HOST")
+DB_PORT = os.environ.get("POSTGRES_PORT")
+DB_PASS = os.environ.get("POSTGRES_PASSWORD")
+REDIS_HOST = os.environ.get("REDIS_HOST")
+REDIS_PORT = os.environ.get("REDIS_PORT")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,14 +68,14 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ASGI_APPLICATION = "musicroulette.asgi.application"
 
-CELERY_BROKER_URL = "redis://localhost:" + REDIS_PORT
-CELERY_RESULT_BACKEND = "redis://localhost:" + REDIS_PORT
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 
 CHANNEL_LAYERS = {
     'default': {
         "BACKEND": 'channels_redis.core.RedisChannelLayer',
         "CONFIG": {
-            "hosts": [("127.0.0.1", REDIS_PORT)],
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
         }
     }
 }
