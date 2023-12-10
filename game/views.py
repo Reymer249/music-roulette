@@ -45,6 +45,37 @@ def login_page(request):
     return HttpResponse(template.render(context, request))
 
 
+
+from urllib.parse import urlparse
+from corlos import get_spotipy_auth_manager
+
+def spotify_login(request):
+    if request.user.is_authenticated:
+        # Check if token is valid:
+        # If NOT valid, try to refresh
+        # If refresh failed, continue with normal authentication
+        pass
+
+    auth_manager = get_spotipy_auth_manager()
+    redirect_url = auth_manager.get_authorize_url()
+    return HttpResponseRedirect(redirect_url)
+
+def spotify_callback(request):
+    full_path = request.get_full_path()
+    parsed_url = urlparse(full_path)
+    authorization_code = parse_qs(parsed_url.query)['code'][0]
+
+    auth_manager = get_spotify_auth_manager()
+    access_token = auth_manager.get_access_token(authorization_code)
+
+    # And I guess here we save the user in the database?
+    # (username, access_token) but idk how to do this
+    # login(request, user_form) 
+
+    return redirect(settings.LOGIN_REDIRECT_URL)
+
+
+
 def main_page(request):
     if not request.user.is_authenticated:
         return redirect(f"{settings.LOGIN_URL}")
