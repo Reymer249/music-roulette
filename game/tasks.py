@@ -5,6 +5,8 @@ from asgiref.sync import async_to_sync
 from django.core.cache import cache
 from .models import UsersParties
 
+import random
+from corlos import get_spotipy_service, get_embedded_html
 
 @shared_task
 def game_process(lobby_id, game_group_id):
@@ -41,9 +43,24 @@ def game_process(lobby_id, game_group_id):
         print("NEW ROUND")
 
         # TODO: select songs (Carlos)
-        profile_links = {player.id: player.spotify_link for player in player_list}
+        profile_token = {player.id: player.token for player in player_list}
+                        # Here I actually need: player.service for player.
+                        # But im not sure if the 'service' can survive in the data base
+                        # So maybe I just need to get the token and refresh the service always
+
+        chosen_player = random.choice(list(profile_token.keys()))
+        service = get_spotipy_service(profile_token[chosen_player])
+
+        track_summaries = get_top_tracks(service) + get_recent_tracks(service) + get_saved_tracks(service)
+        song_urls = [summary['spotify_url'] for summary in track_summaries]
+        weights = [summary['popularity'] for summary in track_summaries]
+
+        picked_url = random.choices(song_urls, weights)
+        embedded_html = get_embedded_html(picked)
+
         spotify_link = "https://open.spotify.com/embed/track/2UuOcNP8dU5nVq57ABxzIo?utm_source=generator"
-        answer = 2  # the id of the selected song player
+
+        answer = chosen_player
         # TODO: end select songs (Carlos)
 
         # send group the message about starting a new round

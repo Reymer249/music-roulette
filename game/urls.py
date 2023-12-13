@@ -9,4 +9,7 @@ urlpatterns = [
     path("lobby/<int:lobby_id>/", views.lobby_page, name="lobby_page"),
     path("lobby/<int:lobby_id>/game/", views.game_page, name="game_page"),
     path("lobby/<int:lobby_id>/results/", views.results_page, name="results_page"),
+
+    path('spotify_login', views.spotify_login, name="spotify_login"),
+    path('spotify_callback', views.spotify_callback, name="spotify_callback")
 ]
