@@ -6,11 +6,19 @@ from django.contrib.auth import login
 from .models import Parties, UsersParties
 from django.core.cache import cache
 from .forms import LoginForm
+from corlos import get_spotipy_auth_manager
 import random
+import time
+
+
+def check_if_authenticated(request):
+    return not (not request.user.is_authenticated
+                or request.user.expire_time is None
+                or request.user.expire_time < time.time() + 300)
 
 
 def login_page(request):
-    if request.user.is_authenticated:
+    if check_if_authenticated(request):
         # Check if 'next' parameter exists in the GET parameters
         next_param = request.GET.get('next')
 
@@ -28,63 +36,58 @@ def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
+            # redirect to spotify login page
             form.instance.username = f'{random.randrange(1000000000)}'
             user = form.save()
             login(request, user)
 
-            # Check if 'next' parameter exists in the GET parameters
-            next_param = request.GET.get('next')
+            client_id = settings.CLIENT_ID
+            redirect_uri = settings.REDIRECT_URI
+            scopes = [
+                'user-top-read',
+                'user-read-recently-played',
+                'user-library-read',
+            ]
+            scope_string = " ".join(scopes)
 
-            if next_param:
-                return redirect(next_param)
-            else:
-                return redirect(settings.LOGIN_REDIRECT_URL)
+            # TODO: redirect to spotify login with callback and pass parameter next
+            redirect(f"https://accounts.spotify.com/authorize"
+                     f"?client_id={settings.SPOTIFY_CLIENT_ID}"
+                     f"&redirect_uri={settings.SPOTIFY_REDIRECT_URI}"
+                     f"&response_type=code"
+                     f"&scope={scope_string}")
         else:
             context["errors"] = form.errors
 
     return HttpResponse(template.render(context, request))
 
 
-
-from urllib.parse import urlparse
-from corlos import get_spotipy_auth_manager
-
-def spotify_login(request):
-    if request.user.is_authenticated:
-        # Check if token is valid:
-        # If NOT valid, try to refresh
-        # If refresh failed, continue with normal authentication
-        pass
-
-    auth_manager = get_spotipy_auth_manager()
-    redirect_url = auth_manager.get_authorize_url()
-    return HttpResponseRedirect(redirect_url)
-
 def spotify_callback(request):
-    full_path = request.get_full_path()
-    parsed_url = urlparse(full_path)
-    authorization_code = parse_qs(parsed_url.query)['code'][0]
+    authorization_code = request.GET.get('code')
+    auth_manager = get_spotipy_auth_manager()
 
-    auth_manager = get_spotify_auth_manager()
-    access_token = auth_manager.get_access_token(authorization_code)
+    # save user token and exp time
+    request.user.token = auth_manager.get_access_token(authorization_code)
+    request.user.expire_time = time.time()
 
-    # And I guess here we save the user in the database?
-    # (username, access_token) but idk how to do this
-    # login(request, user_form) 
+    # Check if 'next' parameter exists in the GET parameters
+    next_param = request.session.get('next')
 
-    return redirect(settings.LOGIN_REDIRECT_URL)
-
+    if next_param:
+        return redirect(next_param)
+    else:
+        return redirect(settings.LOGIN_REDIRECT_URL)
 
 
 def main_page(request):
-    if not request.user.is_authenticated:
+    if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}")
 
     return render(request, "main_page.html", {})
 
 
 def create_party(request):
-    if not request.user.is_authenticated:
+    if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
     # Create a new Parties record
@@ -96,7 +99,7 @@ def create_party(request):
 
 
 def lobbyselect_page(request):
-    if not request.user.is_authenticated:
+    if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
     lobby_ids = [lobby.id for lobby in Parties.objects.all()]
@@ -105,7 +108,7 @@ def lobbyselect_page(request):
 
 
 def lobby_page(request, lobby_id):
-    if not request.user.is_authenticated:
+    if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
     user = request.user
@@ -132,7 +135,7 @@ def lobby_page(request, lobby_id):
 
 
 def game_page(request, lobby_id):
-    if not request.user.is_authenticated:
+    if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
     template = loader.get_template("game_page.html")
@@ -140,9 +143,6 @@ def game_page(request, lobby_id):
 
 
 def results_page(request, lobby_id):
-    if not request.user.is_authenticated:
-        return redirect(f"{settings.LOGIN_URL}?next={request.path}")
-
     player_list = [up.user for up in UsersParties.objects.filter(party_id=lobby_id)]
 
     # get scores from django cache

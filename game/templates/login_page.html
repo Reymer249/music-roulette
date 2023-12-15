@@ -18,7 +18,7 @@
     <div class="login-box">
         <form method="post">
             {% csrf_token %}{{ form }}
-            <button class="play_button" type="submit">Play!</button>
+            <button class="play_button" type="submit">Log In With Spotify</button>
         </form>
     </div>
     {% if errors %}
@@ -30,6 +30,20 @@
     {% endif %}
     <img src="https://media.tenor.com/gXMtMCZ5WccAAAAd/cat-head-bump-cat-nodding.gif" style="margin-top:5vh;width:20vh;height:20vh;">
 
+    <script type="text/javascript">
+        function validateForm() {
+            const username = document.getElementById('username').value;
+
+            if (username.trim() === '') {
+                alert('Username cannot be empty');
+                return false;
+            }
+
+            window.location.href = '/spotify-login';
+
+            return true;
+    }
+    </script>
 {% endblock %}
 
 {% block logout_button %}

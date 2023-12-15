@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 class Users(AbstractUser):
     name = models.CharField(unique=False)
-    spotify_link = models.URLField(max_length=1000, null=False)
+    spotify_token = models.CharField(max_length=1000, null=True)
+    spotify_token_exp = models.FloatField(null=True)
 
 
 class Parties(models.Model):

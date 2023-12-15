@@ -9,8 +9,9 @@ tzdata
 channels
 channels-redis
 channels_postgres
-django-crispy-forms
-crispy-bootstrap5
 daphne
 celery
 redis
+spotipy
+requests
+social-auth-app-django
