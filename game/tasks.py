@@ -4,9 +4,9 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.core.cache import cache
 from .models import UsersParties
-
+from .corlos import get_spotipy_service, get_embedded_html
 import random
-from corlos import get_spotipy_service, get_embedded_html
+
 
 @shared_task
 def game_process(lobby_id, game_group_id):

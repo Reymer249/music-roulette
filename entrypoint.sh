@@ -8,7 +8,7 @@ python manage.py createcachetable
 
 celery -A musicroulette purge -f
 
-celery -A musicroulette worker --detach -l info -P solo
+celery -A musicroulette worker --detach -l info -P solo > celery.log 2>&1 | tee celery.log &
 
 python manage.py delete_userparties
 

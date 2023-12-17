@@ -6,15 +6,15 @@ from django.contrib.auth import login
 from .models import Parties, UsersParties
 from django.core.cache import cache
 from .forms import LoginForm
-from corlos import get_spotipy_auth_manager
+from .corlos import get_spotipy_auth_manager
 import random
 import time
 
 
 def check_if_authenticated(request):
     return not (not request.user.is_authenticated
-                or request.user.expire_time is None
-                or request.user.expire_time < time.time() + 300)
+                or request.user.spotify_token_exp is None
+                or request.user.spotify_token_exp < time.time() + 300)
 
 
 def login_page(request):
@@ -41,8 +41,6 @@ def login_page(request):
             user = form.save()
             login(request, user)
 
-            client_id = settings.CLIENT_ID
-            redirect_uri = settings.REDIRECT_URI
             scopes = [
                 'user-top-read',
                 'user-read-recently-played',
@@ -51,9 +49,9 @@ def login_page(request):
             scope_string = " ".join(scopes)
 
             # TODO: redirect to spotify login with callback and pass parameter next
-            redirect(f"https://accounts.spotify.com/authorize"
-                     f"?client_id={settings.SPOTIFY_CLIENT_ID}"
-                     f"&redirect_uri={settings.SPOTIFY_REDIRECT_URI}"
+            return redirect(f"https://accounts.spotify.com/authorize"
+                     f"?client_id={settings.CLIENT_ID}"
+                     f"&redirect_uri={settings.REDIRECT_URI}"
                      f"&response_type=code"
                      f"&scope={scope_string}")
         else:
@@ -67,11 +65,15 @@ def spotify_callback(request):
     auth_manager = get_spotipy_auth_manager()
 
     # save user token and exp time
-    request.user.token = auth_manager.get_access_token(authorization_code)
-    request.user.expire_time = time.time()
+    user = request.user
+    user.spotify_token = auth_manager.get_access_token(authorization_code)
+    user.spotify_token_exp = time.time() + 3600
+    user.save()
 
     # Check if 'next' parameter exists in the GET parameters
     next_param = request.session.get('next')
+
+    print(next_param)
 
     if next_param:
         return redirect(next_param)
