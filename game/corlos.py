@@ -5,7 +5,7 @@ from django.conf import settings
 
 
 SCOPES = [
-    'user-top-read', 
+    'user-top-read',
     'user-read-recently-played',
     'user-library-read',
 ]
@@ -21,8 +21,8 @@ def get_embedded_html(spotify_url):
         data = response.json()
         return data['html']
     return None
-   
- 
+
+
 def get_spotipy_auth_manager():
     auth_manager = SpotifyOAuth(
         client_id=CLIENT_ID,
@@ -37,7 +37,7 @@ def get_spotipy_service(token):
     return spotipy.Spotify(auth=token)
 
 
-def get_top_tracks(service, *, limit=20, offset=0, time_range='short_term'):
+def get_top_tracks(service, limit=20, offset=0, time_range='short_term'):
     """
     Return 20 of the most user top tracks.
 
@@ -54,14 +54,14 @@ def get_top_tracks(service, *, limit=20, offset=0, time_range='short_term'):
         summary = {
             'duration_sec': int(track['duration_ms'] * 1000),
             'popularity': track['popularity'],
-            'spotify_url': track['external_url']['spotify'],
+            'spotify_url': track['external_urls']['spotify'],
         }
         total.append(summary)
 
     return total
 
 
-def get_recent_tracks(service, *, limit=20, after=None, before=None):
+def get_recent_tracks(service, limit=20, after=None, before=None):
     """
     Returns the 20 most recently played songs from user.
 
@@ -88,7 +88,7 @@ def get_recent_tracks(service, *, limit=20, after=None, before=None):
     return total
 
 
-def get_saved_tracks(service, *, limit=20, offset=0):
+def get_saved_tracks(service, limit=20, offset=0):
     """
     Returns the 20 most recent user saved tracks.
 

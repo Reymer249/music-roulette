@@ -4,7 +4,8 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.core.cache import cache
 from .models import UsersParties
-from .corlos import get_spotipy_service, get_embedded_html
+from .corlos import *
+import json
 import random
 
 
@@ -43,20 +44,23 @@ def game_process(lobby_id, game_group_id):
         print("NEW ROUND")
 
         # TODO: select songs (Carlos)
-        profile_token = {player.id: player.token for player in player_list}
+        profile_token = {player.id: player.spotify_token for player in player_list}
                         # Here I actually need: player.service for player.
                         # But im not sure if the 'service' can survive in the data base
                         # So maybe I just need to get the token and refresh the service always
 
         chosen_player = random.choice(list(profile_token.keys()))
-        service = get_spotipy_service(profile_token[chosen_player])
+        print(chosen_player)
+        print(profile_token[chosen_player].replace("'", '"'))
+        print(json.loads(profile_token[chosen_player].replace("'", '"')))
+        service = get_spotipy_service(json.loads(profile_token[chosen_player].replace("'", '"'))['access_token'])
 
-        track_summaries = get_top_tracks(service) + get_recent_tracks(service) + get_saved_tracks(service)
+        track_summaries = get_top_tracks(service) # + get_recent_tracks(service) + get_saved_tracks(service)
         song_urls = [summary['spotify_url'] for summary in track_summaries]
         weights = [summary['popularity'] for summary in track_summaries]
 
-        picked_url = random.choices(song_urls, weights)
-        embedded_html = get_embedded_html(picked)
+        picked_url = random.choices(song_urls, weights, k=1)[0]
+        embedded_html = get_embedded_html(picked_url)
 
         spotify_link = "https://open.spotify.com/embed/track/2UuOcNP8dU5nVq57ABxzIo?utm_source=generator"
 
