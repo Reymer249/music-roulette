@@ -11,12 +11,11 @@ import random
 
 @shared_task
 def game_process(lobby_id, game_group_id):
-    print("GAME STARTS")
+    print("GAME PROCESS STARTS")
 
     round_num = 3
     question_time = 5
     answer_time = 5
-    ws_wait_time = 2
     start_wait_time = 6
 
     layer = get_channel_layer()
@@ -24,8 +23,25 @@ def game_process(lobby_id, game_group_id):
     round_cnt = 1
     scores = {player.id: 0 for player in player_list}
 
-    # wait the users to establish a websocket connection while 5 sec game countdown ticks
-    time.sleep(ws_wait_time)
+    while True:
+        if [cache.get(f"lobby_{lobby_id}_user_{player.id}_ready") for player in player_list].count(True) == len(player_list):
+            for player in player_list:
+                cache.set(f"lobby_{lobby_id}_user_{player.id}_ready", None, 0)
+
+            async_to_sync(layer.group_send)(
+                game_group_id,
+                {
+                    "type": "start_countdown"
+                }
+            )
+
+            break
+
+        time.sleep(0.1)
+
+    print("GAME STARTS")
+
+    # send the init info to users
 
     async_to_sync(layer.group_send)(
         game_group_id,
@@ -37,8 +53,8 @@ def game_process(lobby_id, game_group_id):
         }
     )
 
-    # wait the rest of the 5 sec game countdown
-    time.sleep(start_wait_time - ws_wait_time)
+    # wait the 5 sec game countdown
+    time.sleep(start_wait_time)
 
     while round_cnt <= round_num:
         print("NEW ROUND")
@@ -50,9 +66,6 @@ def game_process(lobby_id, game_group_id):
                         # So maybe I just need to get the token and refresh the service always
 
         chosen_player = random.choice(list(profile_token.keys()))
-        print(chosen_player)
-        print(profile_token[chosen_player].replace("'", '"'))
-        print(json.loads(profile_token[chosen_player].replace("'", '"')))
         service = get_spotipy_service(json.loads(profile_token[chosen_player].replace("'", '"'))['access_token'])
 
         track_summaries = get_top_tracks(service) # + get_recent_tracks(service) + get_saved_tracks(service)

@@ -10,7 +10,7 @@ celery -A musicroulette purge -f
 
 python manage.py delete_userparties
 
-celery -A musicroulette worker -l info -P solo &
+celery -A musicroulette worker -l info &
 
 python manage.py runserver 0.0.0.0:8000 &
 

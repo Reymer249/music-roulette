@@ -16,8 +16,18 @@
 {% block colour_4 %}"#93d8f0"{% endblock %}
 
 
+{% block popup %}
+    <!-- ready? popup -->
+    <div id="popup">
+        <p id="popup-text">Ready?</p>
+    </div>
+{% endblock %}
+
 
 {% block body %}
+    <!-- song -->
+    <iframe id="song" style="" src="https://open.spotify.com/embed/track/3ewQvXUYzZ817ROJaVI2va?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" muted=></iframe>
+
     <!-- countdown -->
     <svg width = "162" height = "163" viewBox="-162 -163 486 492" xmlns="http://www.w3.org/2000/svg">
         <g id="numbers" fill="none" stroke="#0c58e5" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
@@ -120,6 +130,10 @@
                         players.appendChild(liElement);
                     }
                     break;
+                case "start_countdown":
+                    document.getElementById("popup").style.visibility = "hidden";
+                    countdownTimer();
+                    break;
                 case "new_round":
                     // get question time, answer time, song link
                     questionTimeValue = data.question_time;
@@ -127,6 +141,11 @@
                     spotifyLink = data.spotify_link;
                     let song_link = document.getElementById("song_link");
                     song_link.innerHTML = data.spotify_link;
+
+                    document.addEventListener('DOMContentLoaded', (event) => {
+                        autoplay()
+                    })
+
                     StartRound();
                     break;
                 case "correct_ans":
@@ -144,10 +163,6 @@
 
 
 
-
-        // countdown
-
-        countdownTimer();
 
         // path array
         var number = ["M31 93.3907L81.918 16h16.7775v110.7913l19.5336 20.9775V34.9362h-15.3084l-53.121 77.2553v11.894h83.0365l-20.2774-20.2774H31V93.3908z",
@@ -174,6 +189,35 @@
                     document.getElementById("numbers").setAttribute("stroke", color[time]);
                 }
             }
+        }
+
+
+
+
+
+        // popup click event
+
+        document.getElementById("popup").addEventListener('click', () => {
+            document.getElementById("popup-text").textContent = "Waiting for others...";
+
+            rouletteSocket.send(JSON.stringify({
+                "type": "ready"
+            }));
+        });
+
+
+
+
+
+        // press spotify play button
+        function autoplay() {
+            var t = setTimeout(function(){
+                var button = document.querySelector('[title="Play"]') || false;
+                if (button) {
+                    console.log('Click', button)
+                    button.click()
+                }
+            }, 999)
         }
 
 

@@ -127,6 +127,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await database_sync_to_async(
                     lambda: cache.set(f"lobby_{self.lobby_id}_user_{self.user.id}_answer", text_data_json["answer"])
                 )()
+            case "ready":
+                # user ready to start
+                await database_sync_to_async(
+                    lambda: cache.set(f"lobby_{self.lobby_id}_user_{self.user.id}_ready", True)
+                )()
 
     async def init(self, event):
         player_ids = event["player_ids"]
@@ -136,6 +141,9 @@ class GameConsumer(AsyncWebsocketConsumer):
                                               "round_num": round_num,
                                               "player_ids": player_ids,
                                               "player_names": player_names}))
+
+    async def start_countdown(self, event):
+        await self.send(text_data=json.dumps({"type": "start_countdown"}))
 
     async def new_round(self, event):
         question_time = event["question_time"]
