@@ -171,7 +171,7 @@ section{
 }
 
 section #option_list{
-    padding: 3vh 1vw;
+    padding: 3vh 0;
     display: block;
 }
 

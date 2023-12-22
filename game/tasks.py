@@ -16,7 +16,7 @@ def game_process(lobby_id, game_group_id):
     round_num = 3
     question_time = 5
     answer_time = 5
-    start_wait_time = 6
+    start_wait_time = 5
 
     layer = get_channel_layer()
     player_list = [up.user for up in UsersParties.objects.filter(party_id=lobby_id)]
@@ -61,21 +61,16 @@ def game_process(lobby_id, game_group_id):
 
         # TODO: select songs (Carlos)
         profile_token = {player.id: player.spotify_token for player in player_list}
-                        # Here I actually need: player.service for player.
-                        # But im not sure if the 'service' can survive in the data base
-                        # So maybe I just need to get the token and refresh the service always
 
         chosen_player = random.choice(list(profile_token.keys()))
         service = get_spotipy_service(json.loads(profile_token[chosen_player].replace("'", '"'))['access_token'])
 
-        track_summaries = get_top_tracks(service) # + get_recent_tracks(service) + get_saved_tracks(service)
+        track_summaries = get_top_tracks(service) + get_recent_tracks(service) + get_saved_tracks(service)
+
         song_urls = [summary['spotify_url'] for summary in track_summaries]
         weights = [summary['popularity'] for summary in track_summaries]
 
-        picked_url = random.choices(song_urls, weights, k=1)[0]
-        embedded_html = get_embedded_html(picked_url)
-
-        spotify_link = "https://open.spotify.com/embed/track/2UuOcNP8dU5nVq57ABxzIo?utm_source=generator"
+        picked_url = random.choices(song_urls, weights, k=1)[0].replace("/track/", "/embed/track/")
 
         answer = chosen_player
         # TODO: end select songs (Carlos)
@@ -87,7 +82,7 @@ def game_process(lobby_id, game_group_id):
                 "type": "new_round",
                 "question_time": question_time,
                 "answer_time": answer_time,
-                "spotify_link": spotify_link
+                "spotify_link": picked_url
             }
         )
 

@@ -28,7 +28,10 @@
             
             {% block logout_button %}
             <h0>You have logged in as {{ request.user.name }}</h0>
-            <button class="logout_button" onclick="location.href='/logout/'">Log out</button>
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="logout_button">Log out</button>
+            </form>
             {% endblock %}
         </div>
         <div class="background-layer">

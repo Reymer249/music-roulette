@@ -25,9 +25,6 @@
 
 
 {% block body %}
-    <!-- song -->
-    <iframe id="song" style="" src="https://open.spotify.com/embed/track/3ewQvXUYzZ817ROJaVI2va?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" muted=></iframe>
-
     <!-- countdown -->
     <svg width = "162" height = "163" viewBox="-162 -163 486 492" xmlns="http://www.w3.org/2000/svg">
         <g id="numbers" fill="none" stroke="#0c58e5" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
@@ -47,11 +44,11 @@
         </header>
 
         <section>
+            <iframe id="song" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
             <div id="option_list"></div>
         </section>
 
         <footer>
-            <p id="song_link"></p>
             <button class="next_btn">Next Song</button>
         </footer>
     </div>
@@ -139,13 +136,8 @@
                     questionTimeValue = data.question_time;
                     answerTimeValue = data.answer_time;
                     spotifyLink = data.spotify_link;
-                    let song_link = document.getElementById("song_link");
-                    song_link.innerHTML = data.spotify_link;
-
-                    document.addEventListener('DOMContentLoaded', (event) => {
-                        autoplay()
-                    })
-
+                    let song_link = document.getElementById("song");
+                    song_link.src = data.spotify_link;
                     StartRound();
                     break;
                 case "correct_ans":
@@ -204,21 +196,6 @@
                 "type": "ready"
             }));
         });
-
-
-
-
-
-        // press spotify play button
-        function autoplay() {
-            var t = setTimeout(function(){
-                var button = document.querySelector('[title="Play"]') || false;
-                if (button) {
-                    console.log('Click', button)
-                    button.click()
-                }
-            }, 999)
-        }
 
 
 
