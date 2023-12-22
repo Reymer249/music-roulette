@@ -36,11 +36,11 @@ svg {
 }
 h0{
     position: fixed;
-    font-size: 1.7vmin;
+    font-size: 2vmin;
     top: 0vh;
     left: 0vw;
-    width: 12vw;
-    height: 5vh;
+    width: 15vw;
+    height: 6vh;
     font-family: 'Poppins', sans-serif;
     text-align: center;
     background-color: lavender;
@@ -49,10 +49,10 @@ h0{
 }
 .logout_button{
     position: fixed;
-    top: 5vh;
+    top: 56vh;
     left: 0vw;
-    font-size: 1.7vmin;
-    width: 12.1vw;
+    font-size: 2vmin;
+    width: 15vw;
     font-family: 'Poppins', sans-serif;
     background-color: rgb(125, 81, 212);
     color:#ffffff;
@@ -61,4 +61,25 @@ h0{
 }
 .logout_button:hover{
     transform:scale(1);
+}
+.rainbow-text{
+    animation: colorRotate 6s linear 0s infinite;
+}
+
+@keyframes colorRotate {
+    from {
+        color: #6666ff;
+    }
+    10% {
+        color: #0099ff;
+    }
+    50% {
+        color: #00ff00;
+    }
+    75% {
+        color: #ff3399;
+    }
+    100% {
+        color: #6666ff;
+    }
 }

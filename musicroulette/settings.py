@@ -24,6 +24,7 @@ REDIS_HOST = os.environ.get("REDIS_HOST")
 REDIS_PORT = os.environ.get("REDIS_PORT")
 
 IVAN_CODE = os.environ.get("IVAN_CODE", "placeholder")
+SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

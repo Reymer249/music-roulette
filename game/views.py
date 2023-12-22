@@ -30,11 +30,6 @@ def login_page(request):
         else:
             return redirect(settings.LOGIN_REDIRECT_URL)
 
-        ivan_code = request.GET.get('code')
-        if ivan_code:
-            if ivan_code == settings.IVAN_CODE:
-                response.set_cookie('ivan', '', max_age=315360000)
-
     template = loader.get_template("login_page.html")
     context = {
         "form": LoginForm(),
@@ -65,7 +60,12 @@ def login_page(request):
         else:
             context["errors"] = form.errors
 
-    return HttpResponse(template.render(context, request))
+    response = HttpResponse(template.render(context, request))
+    ivan_code = request.GET.get('code')
+    if ivan_code:
+        if ivan_code == settings.IVAN_CODE:
+            request.session['ivan'] = True
+    return response
 
 
 def spotify_callback(request):

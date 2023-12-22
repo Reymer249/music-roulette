@@ -47,21 +47,6 @@ h0{
     color:rgb(0, 0, 0);
     border-right: .1vw solid rgb(1, 88, 88);
 }
-.logout_button{
-    position: fixed;
-    top: 5vh;
-    left: 0vw;
-    font-size: 1.7vmin;
-    width: 12.1vw;
-    font-family: 'Poppins', sans-serif;
-    background-color: rgb(1, 88, 88);
-    color:#ffffff;
-    border: none;
-    border-radius: 0 0 15px 0;
-}
-.logout_button:hover{
-    transform:scale(1);
-}
 
 h1{
     font-size: 8vmin;

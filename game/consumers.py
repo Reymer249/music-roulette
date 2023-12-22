@@ -26,7 +26,9 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
         # update player list for everybody in the lobby
-        await self.channel_layer.group_send(self.lobby_group_id, {"type": "update_lobby_info"})
+        ivan = self.scope['session'].get('ivan')
+        await self.channel_layer.group_send(self.lobby_group_id,
+                                            {"type": "update_lobby_info", "ivan": (self.user.id if ivan else None)})
 
     async def disconnect(self, close_code):
         # remove this channel from the group
@@ -74,15 +76,17 @@ class LobbyConsumer(AsyncWebsocketConsumer):
                     game_process.delay(self.lobby_id, self.game_group_id)
 
     async def update_lobby_info(self, event):
+        self.ivan = event["ivan"]
         # get all the names of the players in the group
         user_parties = await database_sync_to_async(
             lambda: UsersParties.objects.filter(party_id=self.lobby_id)
         )()
-        names = await database_sync_to_async(
+        players = await database_sync_to_async(
             lambda: list(Users.objects.filter(
                 id__in=[up.user_id for up in user_parties]
-            ).values_list('name', flat=True))
+            ).values_list('id', 'name', flat=True))
         )()
+        names = [{"name": p["name"], "ivan": (p["id"] == self.ivan)} for p in players]
 
         # send the user the updated user list
         await self.send(text_data=json.dumps({"type": "update_lobby_info", "player_names": names}))
