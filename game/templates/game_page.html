@@ -116,15 +116,19 @@
                     playerIDs = data.player_ids;
                     playerNames = data.player_names;
                     roundNum = data.round_num;
+                    ivanID = data.ivan_id;
                     optionNum = playerIDs.length;
 
                     let players = document.getElementById("option_list");
                     for (let i = 0; i < playerIDs.length; i++) {
-                        let liElement = document.createElement('div');
-                        liElement.innerHTML = "<span>" + playerNames[i] + "</span>";
-                        liElement.classList.add('option');
-                        liElement.id = "p" + playerIDs[i];
-                        players.appendChild(liElement);
+                        let divElement = document.createElement('div');
+                        divElement.innerHTML = "<span>" + playerNames[i] + "</span>";
+                        divElement.classList.add('option');
+                        if (playerIDs[i] === ivanID) {
+                            divElement.classList.add('rainbow-text');
+                        }
+                        divElement.id = "p" + playerIDs[i];
+                        players.appendChild(divElement);
                     }
                     break;
                 case "start_countdown":

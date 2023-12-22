@@ -14,7 +14,6 @@ import time
 
 
 def check_if_authenticated(request):
-    print(request.user.spotify_token)
     return not (not request.user.is_authenticated
                 or request.user.spotify_token is None
                 or json.loads(request.user.spotify_token.replace("'", '"'))['expires_at'] < time.time() + 300)
@@ -160,7 +159,8 @@ def results_page(request, lobby_id):
     # player_list = [{"id": 0, "name": "Ivandivan"}, {"id": 1, "name": "Malcsimka"}]
     # scores = {0: 7, 1: 10}
 
-    name_score_list = [{"name": player.name, "score": scores[player.id]} for player in player_list]
+    name_score_list = [{"name": player.name, "score": scores[player.id]}
+                       for player in player_list]
     name_score_list_sorted = sorted(name_score_list, key=lambda x: x["score"], reverse=True)
 
     for i, player in enumerate(name_score_list_sorted):

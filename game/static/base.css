@@ -40,7 +40,7 @@ h0{
     top: 0vh;
     left: 0vw;
     width: 15vw;
-    height: 6vh;
+    height: 7vh;
     font-family: 'Poppins', sans-serif;
     text-align: center;
     background-color: lavender;
@@ -49,7 +49,7 @@ h0{
 }
 .logout_button{
     position: fixed;
-    top: 56vh;
+    top: 7vh;
     left: 0vw;
     font-size: 2vmin;
     width: 15vw;

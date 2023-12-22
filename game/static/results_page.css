@@ -33,19 +33,6 @@ svg{
     left: 0;
     z-index: 0;
 }
-h0{
-    position: fixed;
-    font-size: 1.7vmin;
-    top: 0vh;
-    left: 0vw;
-    width: 12vw;
-    height: 5.5vh;
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    background-color: rgb(254, 249, 243);
-    color:rgb(0, 0, 0);
-    border-right: .1vw solid rgb(255, 116, 51);
-}
 
 h1{
     font-size: 10.5vmin;

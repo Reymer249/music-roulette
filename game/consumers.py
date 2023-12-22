@@ -16,6 +16,8 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         self.lobby_group_id = "lobby_%s" % self.lobby_id
         self.game_group_id = "game_%s" % self.lobby_id
 
+        self.ivan = None
+
         # get the lobby object
         self.lobby = await database_sync_to_async(lambda: Parties.objects.get(id=self.lobby_id))()
 
@@ -27,6 +29,7 @@ class LobbyConsumer(AsyncWebsocketConsumer):
 
         # update player list for everybody in the lobby
         ivan = self.scope['session'].get('ivan')
+        print(ivan)
         await self.channel_layer.group_send(self.lobby_group_id,
                                             {"type": "update_lobby_info", "ivan": (self.user.id if ivan else None)})
 
@@ -73,7 +76,7 @@ class LobbyConsumer(AsyncWebsocketConsumer):
                     await self.channel_layer.group_send(self.lobby_group_id, {"type": "start_game"})
 
                     # start the game process task in celery
-                    game_process.delay(self.lobby_id, self.game_group_id)
+                    game_process.delay(self.lobby_id, self.game_group_id, self.ivan)
 
     async def update_lobby_info(self, event):
         self.ivan = event["ivan"]
@@ -84,13 +87,13 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         players = await database_sync_to_async(
             lambda: list(Users.objects.filter(
                 id__in=[up.user_id for up in user_parties]
-            ).values_list('id', 'name', flat=True))
+            ).values_list('id', 'name'))
         )()
-        names = [{"name": p["name"], "ivan": (p["id"] == self.ivan)} for p in players]
+        names = [{"name": p[1], "ivan": (p[0] == self.ivan)} for p in players]
 
         # send the user the updated user list
         await self.send(text_data=json.dumps({"type": "update_lobby_info", "player_names": names}))
-    
+
     async def chat_message(self, event):
         message = event["message"]
         print(f"chat: {message}")
@@ -141,10 +144,12 @@ class GameConsumer(AsyncWebsocketConsumer):
         player_ids = event["player_ids"]
         player_names = event["player_names"]
         round_num = event["round_num"]
+        ivan_id = event["ivan_id"]
         await self.send(text_data=json.dumps({"type": "init",
                                               "round_num": round_num,
                                               "player_ids": player_ids,
-                                              "player_names": player_names}))
+                                              "player_names": player_names,
+                                              "ivan_id": ivan_id}))
 
     async def start_countdown(self, event):
         await self.send(text_data=json.dumps({"type": "start_countdown"}))
