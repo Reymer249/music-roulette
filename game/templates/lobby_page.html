@@ -61,7 +61,7 @@
                         let liElement = document.createElement('li');
                         liElement.textContent = data.player_names[i].name;
                         liElement.classList.add('item');
-                        if(data.player_names[i].ivan) {
+                        if(data.player_names[i].level === 7) {
                             liElement.classList.add('rainbow-text');
                         }
                         players.appendChild(liElement);

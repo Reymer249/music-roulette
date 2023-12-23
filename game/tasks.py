@@ -10,7 +10,7 @@ import random
 
 
 @shared_task
-def game_process(lobby_id, game_group_id, ivan_id):
+def game_process(lobby_id, game_group_id):
     print("GAME PROCESS STARTS")
 
     round_num = 3
@@ -24,8 +24,8 @@ def game_process(lobby_id, game_group_id, ivan_id):
     scores = {player.id: 0 for player in player_list}
     played_songs = [""]
 
-    if ivan_id is not None:
-        ivan_times = random.sample(range(1, round_num + 1), 2)
+    ivan_id = UsersParties.objects.get(party_id=lobby_id, user__level=7).user.id
+    ivan_times = random.sample(range(1, round_num + 1), 1)
 
     while True:
         if [cache.get(f"lobby_{lobby_id}_user_{player.id}_ready") for player in player_list].count(True) == len(player_list):
@@ -54,7 +54,7 @@ def game_process(lobby_id, game_group_id, ivan_id):
             "round_num": round_num,
             "player_ids": [player.id for player in player_list],
             "player_names": [player.name for player in player_list],
-            "ivan_id": ivan_id
+            "player_levels": [player.level for player in player_list]
         }
     )
 

@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class Users(AbstractUser):
     name = models.CharField(unique=False)
     spotify_token = models.CharField(max_length=1000, null=True)
+    level = models.PositiveSmallIntegerField(default=1, blank=True, null=True)
 
 class Parties(models.Model):
     pass

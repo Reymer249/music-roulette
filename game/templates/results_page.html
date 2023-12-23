@@ -20,15 +20,16 @@
     <h2>The winner is...</h2>
 
     <ul class="score_wrapper">
-        {% for ns in name_score_list %}
-            <li class="result_item">
-                {% if ns.place == 1 %}
+        {% for nsl in score_list %}
+            <li class="{% if nsl.level == 7 %}result_item rainbow-text{% else %}result_item{% endif %}">
+                {% if nsl.place == 1 %}
                     <div class="fa-solid fa-crown crown"></div>
                 {% else %}
-                    <div class="crown">{{ ns.place }}</div>
+                    <div class="crown">{{ nsl.place }}</div>
                 {% endif %}
-                <div class="name">{{ ns.name }}</div>
-                <div class="points">{{ ns.score }}</div>
+
+                <div class="name">{{ nsl.name }}</div>
+                <div class="points">{{ nsl.score }}</div>
             </li>
         {% endfor %}
     </ul>

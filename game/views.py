@@ -14,9 +14,11 @@ import time
 
 
 def check_if_authenticated(request):
-    return not (not request.user.is_authenticated
-                or request.user.spotify_token is None
-                or json.loads(request.user.spotify_token.replace("'", '"'))['expires_at'] < time.time() + 300)
+    user = request.user
+
+    return not (not user.is_authenticated
+                or user.spotify_token is None
+                or json.loads(user.spotify_token.replace("'", '"'))['expires_at'] < time.time() + 300)
 
 
 def login_page(request):
@@ -59,12 +61,12 @@ def login_page(request):
         else:
             context["errors"] = form.errors
 
-    response = HttpResponse(template.render(context, request))
     ivan_code = request.GET.get('code')
     if ivan_code:
         if ivan_code == settings.IVAN_CODE:
-            request.session['ivan'] = True
-    return response
+            request.session['code'] = True
+
+    return HttpResponse(template.render(context, request))
 
 
 def spotify_callback(request):
@@ -74,6 +76,11 @@ def spotify_callback(request):
     # save user token and exp time
     user = request.user
     user.spotify_token = auth_manager.get_access_token(authorization_code)
+
+    level_code = request.session.get('code')
+    if level_code:
+        user.level = 7
+
     user.save()
 
     # Check if 'next' parameter exists in the GET parameters
@@ -151,26 +158,24 @@ def game_page(request, lobby_id):
 
 
 def results_page(request, lobby_id):
+    # get the list of player objects in the lobby
     player_list = [up.user for up in UsersParties.objects.filter(party_id=lobby_id)]
 
     # get scores from django cache
     scores = cache.get(f"lobby_{lobby_id}_scores")
 
-    # player_list = [{"id": 0, "name": "Ivandivan"}, {"id": 1, "name": "Malcsimka"}]
-    # scores = {0: 7, 1: 10}
-
-    name_score_list = [{"name": player.name, "score": scores[player.id]}
+    score_list = [{"name": player.name, "score": scores[player.id], "level": player.level}
                        for player in player_list]
-    name_score_list_sorted = sorted(name_score_list, key=lambda x: x["score"], reverse=True)
+    score_list_sorted = sorted(score_list, key=lambda x: x["score"], reverse=True)
 
-    for i, player in enumerate(name_score_list_sorted):
+    for i, player in enumerate(score_list_sorted):
         player["place"] = i + 1
 
-    print(name_score_list_sorted)
+    print(score_list_sorted)
 
     template = loader.get_template("results_page.html")
     context = {
         "lobby_id": lobby_id,
-        "name_score_list": name_score_list_sorted
+        "score_list": score_list_sorted
     }
     return HttpResponse(template.render(context, request))
