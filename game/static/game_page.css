@@ -295,3 +295,11 @@ footer button.show{
     font-size: 42px;
     font-family: 'Poppins', sans-serif;
 }
+.logout-color1 {
+    background-color: rgb(217, 229, 251);
+    border-color: #007bff;
+}
+.logout-color2 {
+    background-color: #007bff;
+    border-color: #007bff;
+}

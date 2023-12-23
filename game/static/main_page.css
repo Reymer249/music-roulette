@@ -121,3 +121,11 @@ button:hover{
     transform:scale(1.06);
     transition: .5s;
 }
+.logout-color1 {
+    background-color: lavender;
+    border-color: rgb(125, 81, 212);
+}
+.logout-color2 {
+    background-color: rgb(125, 81, 212);
+    border-color: rgb(125, 81, 212);
+}

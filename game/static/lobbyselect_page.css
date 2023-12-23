@@ -123,3 +123,11 @@ h3{
     border-radius: 15px;
     transition: .5s;
 }
+.logout-color1 {
+    background-color: rgb(219, 255, 226);
+    border-color: rgb(23, 145, 76);
+}
+.logout-color2 {
+    background-color: rgb(23, 145, 76);
+    border-color: rgb(23, 145, 76);
+}

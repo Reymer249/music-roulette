@@ -141,3 +141,11 @@ i{
     border: hidden;
     font-weight: bold;
 }
+.logout-color1 {
+    background-color: rgb(254, 249, 243);
+    border-color: rgb(255, 116, 51);
+}
+.logout-color2 {
+    background-color: rgb(255, 116, 51);
+    border-color: rgb(255, 116, 51);
+}
