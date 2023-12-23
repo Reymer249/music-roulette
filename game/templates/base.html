@@ -29,11 +29,13 @@
             {% endblock %}
             
             {% block logout_button %}
-            <h0>You have logged in as {{ request.user.name }}</h0>
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="logout_button">Log out</button>
-            </form>
+            <div class="logout-container">
+                <p class="logout-color1">Logged in as {{ request.user.name }}</p>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-button logout-color2">Log out</button>
+                </form>
+            </div>
             {% endblock %}
         </div>
         <div class="background-layer">
