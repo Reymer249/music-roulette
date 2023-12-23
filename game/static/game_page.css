@@ -40,10 +40,7 @@ svg {
 }
 
 /* quiz */
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
     font-family: 'Poppins', sans-serif;
 }
 
@@ -297,9 +294,7 @@ footer button.show{
 }
 .logout-color1 {
     background-color: rgb(217, 229, 251);
-    border-color: #007bff;
 }
 .logout-color2 {
     background-color: #007bff;
-    border-color: #007bff;
 }

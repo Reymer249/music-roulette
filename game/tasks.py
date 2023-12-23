@@ -24,7 +24,7 @@ def game_process(lobby_id, game_group_id):
     scores = {player.id: 0 for player in player_list}
     played_songs = [""]
 
-    ivan_id = UsersParties.objects.get(party_id=lobby_id, user__level=7).user.id
+    ivan_id = UsersParties.objects.filter(party_id=lobby_id, user__level=7).first().user.id
     ivan_times = random.sample(range(1, round_num + 1), 1)
 
     while True:

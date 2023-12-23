@@ -39,7 +39,7 @@ svg {
     position: fixed;
     top: 0;
     left: 0;
-    width: 15vw;
+    width: 12vw;
 }
 .logout-container p {
     font-size: 2vmin;
@@ -48,7 +48,6 @@ svg {
     text-align: center;
     color: #000000;
     margin: 0;
-    border-right: .1vw solid rgb(125, 81, 212);
 }
 .logout-button {
     font-size: 2vmin;
@@ -56,15 +55,13 @@ svg {
     font-family: 'Poppins', sans-serif;
     color:#FFFFFF;
     border-radius: 0 0 15px 0;
-    border: .1vw solid rgb(125, 81, 212);
+    border: 0;
 }
 .logout-color1 {
     background-color: lavender;
-    border-color: rgb(125, 81, 212);
 }
 .logout-color2 {
     background-color: rgb(125, 81, 212);
-    border-color: rgb(125, 81, 212);
 }
 .logout-button:hover{
     transform:scale(1);

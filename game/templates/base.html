@@ -31,7 +31,7 @@
             {% block logout_button %}
             <div class="logout-container">
                 <p class="logout-color1">Logged in as {{ request.user.name }}</p>
-                <form action="{% url 'logout' %}" method="post">
+                <form style="display: flex;" action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="logout-button logout-color2">Log out</button>
                 </form>
