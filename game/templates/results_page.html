@@ -19,19 +19,20 @@
     <h1>SCOREBOARD</h1>
     <h2>The winner is...</h2>
 
-    <div class="score_wrapper">
-        <i class="fa-solid fa-crown"></i>
-        <ul class="list">
-            {% for ns in name_score_list %}
-                <li class="dots">{{ ns.name }}</li>
-            {% endfor %}
-        </ul>
-        <ul class="score">
-            {% for ns in name_score_list %}
-                <li class="points">{{ ns.score }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <ul class="score_wrapper">
+        {% for nsl in score_list %}
+            <li class="{% if nsl.level == 7 %}result_item rainbow-text{% else %}result_item{% endif %}">
+                {% if nsl.place == 1 %}
+                    <div class="fa-solid fa-crown crown"></div>
+                {% else %}
+                    <div class="crown">{{ nsl.place }}</div>
+                {% endif %}
+
+                <div class="name">{{ nsl.name }}</div>
+                <div class="points">{{ nsl.score }}</div>
+            </li>
+        {% endfor %}
+    </ul>
 
     <div class="buttons">
         <button class="lobby_button" onclick="location.href='/lobby/{{ lobby_id }}/';">Go Back to Lobby</button>

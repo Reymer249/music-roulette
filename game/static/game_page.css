@@ -1,5 +1,3 @@
-/* countdown */
-
 /* general */
 body{
     margin: 0px;
@@ -40,40 +38,9 @@ svg {
     left: 0%;
     z-index: 0;
 }
-h0{
-    position: fixed;
-    font-size: 1.7vmin;
-    top: 0vh;
-    left: 0vw;
-    width: 12vw;
-    height: 5vh;
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    background-color: rgb(217, 229, 251);
-    color:rgb(0, 0, 0);
-    border-right: .1vw solid #007bff;
-}
-.logout_button{
-    position: fixed;
-    top: 5vh;
-    left: 0vw;
-    font-size: 1.7vmin;
-    width: 12.1vw;
-    font-family: 'Poppins', sans-serif;
-    background-color: #007bff;
-    color:#ffffff;
-    border: none;
-    border-radius: 0 0 15px 0;
-}
-.logout_button:hover{
-    transform:scale(1);
-}
 
 /* quiz */
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
     font-family: 'Poppins', sans-serif;
 }
 
@@ -173,7 +140,7 @@ section{
 }
 
 section #option_list{
-    padding: 3vh 1vw;
+    padding: 3vh 0;
     display: block;
 }
 
@@ -295,4 +262,39 @@ footer button.show{
     opacity: 1;
     pointer-events: auto;
     transform: scale(1);
+}
+
+/* countdown */
+#popup {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #90EE90;
+}
+#popup-text {
+    display: inline-block;
+    text-align: center;
+    margin: auto;
+    color: #FFFFFF;
+    font-size: 42px;
+    font-family: 'Poppins', sans-serif;
+}
+.logout-color1 {
+    background-color: rgb(217, 229, 251);
+}
+.logout-color2 {
+    background-color: #007bff;
 }

@@ -4,27 +4,51 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.core.cache import cache
 from .models import UsersParties
-
+from .corlos import *
+import json
 import random
-from corlos import get_spotipy_service, get_embedded_html
+
 
 @shared_task
 def game_process(lobby_id, game_group_id):
-    print("GAME STARTS")
+    print("GAME PROCESS STARTS")
 
-    round_num = 3
-    question_time = 5
-    answer_time = 5
-    ws_wait_time = 2
-    start_wait_time = 6
+    round_num = 5
+    question_time = 15
+    answer_time = 10
+    start_wait_time = 5
 
     layer = get_channel_layer()
     player_list = [up.user for up in UsersParties.objects.filter(party_id=lobby_id)]
     round_cnt = 1
     scores = {player.id: 0 for player in player_list}
+    played_songs = [""]
 
-    # wait the users to establish a websocket connection while 5 sec game countdown ticks
-    time.sleep(ws_wait_time)
+    ivan_id = None
+    ivan = UsersParties.objects.filter(party_id=lobby_id, user__level=7)
+    if ivan.count():
+        ivan_id = ivan.first().user.id
+    ivan_times = random.sample(range(1, round_num + 1), 1)
+
+    while True:
+        if [cache.get(f"lobby_{lobby_id}_user_{player.id}_ready") for player in player_list].count(True) == len(player_list):
+            for player in player_list:
+                cache.set(f"lobby_{lobby_id}_user_{player.id}_ready", None, 0)
+
+            async_to_sync(layer.group_send)(
+                game_group_id,
+                {
+                    "type": "start_countdown"
+                }
+            )
+
+            break
+
+        time.sleep(0.1)
+
+    print("GAME STARTS")
+
+    # send the init info to users
 
     async_to_sync(layer.group_send)(
         game_group_id,
@@ -32,36 +56,46 @@ def game_process(lobby_id, game_group_id):
             "type": "init",
             "round_num": round_num,
             "player_ids": [player.id for player in player_list],
-            "player_names": [player.name for player in player_list]
+            "player_names": [player.name for player in player_list],
+            "player_levels": [player.level for player in player_list]
         }
     )
 
-    # wait the rest of the 5 sec game countdown
-    time.sleep(start_wait_time - ws_wait_time)
+    # wait the 5 sec game countdown
+    time.sleep(start_wait_time)
 
     while round_cnt <= round_num:
         print("NEW ROUND")
 
-        # TODO: select songs (Carlos)
-        profile_token = {player.id: player.token for player in player_list}
-                        # Here I actually need: player.service for player.
-                        # But im not sure if the 'service' can survive in the data base
-                        # So maybe I just need to get the token and refresh the service always
+        # select songs
+        profile_token = {player.id: player.spotify_token for player in player_list}
 
-        chosen_player = random.choice(list(profile_token.keys()))
-        service = get_spotipy_service(profile_token[chosen_player])
+        if ivan_id is not None and round_cnt in ivan_times:
+            answer = ivan_id
+        else:
+            answer = random.choice(list(profile_token.keys()))
 
-        track_summaries = get_top_tracks(service) + get_recent_tracks(service) + get_saved_tracks(service)
-        song_urls = [summary['spotify_url'] for summary in track_summaries]
-        weights = [summary['popularity'] for summary in track_summaries]
+        if answer == ivan_id:
+            song_urls = ["https://open.spotify.com/track/36ezoymyNwbUSHSNiuI10A?si=51df8b6af35f4018",
+                         "https://open.spotify.com/track/7fcIobA5JUkd90ad8y0cjO?si=7418dca95b814dbb",
+                         "https://open.spotify.com/track/1MsLFY6sFtQmoVucRy0kF9?si=6c6f69ef6c394712",
+                         "https://open.spotify.com/track/3ewQvXUYzZ817ROJaVI2va?si=691c18abd5b74e02",
+                         "https://open.spotify.com/track/08ngkV9MwrLWjyjNc3GVPm?si=76b0c7cc78a34d93",
+                         "https://open.spotify.com/track/3vxfjCT0toa4xCJ8yIAq01?si=95ff608142fd4ed4",
+                         "https://open.spotify.com/track/3BF5XcGzssEL0Z5bP0a7OO?si=5e01d999f5b14de3"]
+            weights = [73, 73, 7, 10, 10, 10, 42]
+        else:
+            service = get_spotipy_service(json.loads(profile_token[answer].replace("'", '"'))['access_token'])
 
-        picked_url = random.choices(song_urls, weights)
-        embedded_html = get_embedded_html(picked)
+            track_summaries = get_top_tracks(service) + get_recent_tracks(service) + get_saved_tracks(service)
 
-        spotify_link = "https://open.spotify.com/embed/track/2UuOcNP8dU5nVq57ABxzIo?utm_source=generator"
+            song_urls = [summary['spotify_url'] for summary in track_summaries]
+            weights = [summary['popularity'] for summary in track_summaries]
 
-        answer = chosen_player
-        # TODO: end select songs (Carlos)
+        picked_url = ""
+        while picked_url in played_songs:
+            picked_url = random.choices(song_urls, weights, k=1)[0].replace("/track/", "/embed/track/")
+        played_songs.append(picked_url)
 
         # send group the message about starting a new round
         async_to_sync(layer.group_send)(
@@ -70,7 +104,7 @@ def game_process(lobby_id, game_group_id):
                 "type": "new_round",
                 "question_time": question_time,
                 "answer_time": answer_time,
-                "spotify_link": spotify_link
+                "spotify_link": picked_url
             }
         )
 

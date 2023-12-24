@@ -16,6 +16,13 @@
 {% block colour_4 %}"#93d8f0"{% endblock %}
 
 
+{% block popup %}
+    <!-- ready? popup -->
+    <div id="popup">
+        <p id="popup-text">Ready?</p>
+    </div>
+{% endblock %}
+
 
 {% block body %}
     <!-- countdown -->
@@ -37,11 +44,11 @@
         </header>
 
         <section>
+            <iframe id="song" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
             <div id="option_list"></div>
         </section>
 
         <footer>
-            <p id="song_link"></p>
             <button class="next_btn">Next Song</button>
         </footer>
     </div>
@@ -108,25 +115,37 @@
                     // get number of rounds, player list
                     playerIDs = data.player_ids;
                     playerNames = data.player_names;
+                    playerLevels = data.player_levels;
                     roundNum = data.round_num;
                     optionNum = playerIDs.length;
 
                     let players = document.getElementById("option_list");
                     for (let i = 0; i < playerIDs.length; i++) {
-                        let liElement = document.createElement('div');
-                        liElement.innerHTML = "<span>" + playerNames[i] + "</span>";
-                        liElement.classList.add('option');
-                        liElement.id = "p" + playerIDs[i];
-                        players.appendChild(liElement);
+                        let divElement = document.createElement('div');
+                        divElement.innerHTML = "<span>" + playerNames[i] + "</span>";
+                        divElement.classList.add('option');
+                        if (playerLevels[i] === 7) {
+                            divElement.classList.add('rainbow-text');
+                        }
+                        divElement.id = "p" + playerIDs[i];
+                        players.appendChild(divElement);
                     }
+                    break;
+                case "start_countdown":
+                    document.getElementById("popup").style.visibility = "hidden";
+                    countdownTimer();
                     break;
                 case "new_round":
                     // get question time, answer time, song link
                     questionTimeValue = data.question_time;
                     answerTimeValue = data.answer_time;
                     spotifyLink = data.spotify_link;
-                    let song_link = document.getElementById("song_link");
-                    song_link.innerHTML = data.spotify_link;
+                    let song_link = document.getElementById("song");
+                    song_link.src = data.spotify_link;
+
+                    clearInterval(counter); //clear counter
+                    quiz_box.classList.add("activeQuiz"); //show quiz box
+                    showQuetions(); //calling showQestions function
                     StartRound();
                     break;
                 case "correct_ans":
@@ -144,10 +163,6 @@
 
 
 
-
-        // countdown
-
-        countdownTimer();
 
         // path array
         var number = ["M31 93.3907L81.918 16h16.7775v110.7913l19.5336 20.9775V34.9362h-15.3084l-53.121 77.2553v11.894h83.0365l-20.2774-20.2774H31V93.3908z",
@@ -175,6 +190,20 @@
                 }
             }
         }
+
+
+
+
+
+        // popup click event
+
+        document.getElementById("popup").addEventListener('click', () => {
+            document.getElementById("popup-text").textContent = "Waiting for others...";
+
+            rouletteSocket.send(JSON.stringify({
+                "type": "ready"
+            }));
+        });
 
 
 

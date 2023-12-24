@@ -8,13 +8,18 @@
           href="https://fonts.googleapis.com/css?family=Fredoka+One:400,700">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
-    {% block style %}
+    {% block base_style %}
         {% load static %}
         <link rel="stylesheet" href="{% static 'base.css' %}" type="text/css"/>
+    {% endblock %}
+    {% block style %}
     {% endblock %}
     
 </head>
 <body>
+    {% block popup %}
+    {% endblock %}
+
     <div class="wrap-layer">
         <div class="text-layer">
             {% block body %}
@@ -24,8 +29,13 @@
             {% endblock %}
             
             {% block logout_button %}
-            <h0>You have logged in as {{ request.user.name }}</h0>
-            <button class="logout_button" onclick="location.href='/logout/'">Log out</button>
+            <div class="logout-container">
+                <p class="logout-color1">Logged in as {{ request.user.name }}</p>
+                <form style="display: flex;" action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-button logout-color2">Log out</button>
+                </form>
+            </div>
             {% endblock %}
         </div>
         <div class="background-layer">

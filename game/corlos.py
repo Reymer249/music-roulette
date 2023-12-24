@@ -5,7 +5,7 @@ from django.conf import settings
 
 
 SCOPES = [
-    'user-top-read', 
+    'user-top-read',
     'user-read-recently-played',
     'user-library-read',
 ]
@@ -21,8 +21,8 @@ def get_embedded_html(spotify_url):
         data = response.json()
         return data['html']
     return None
-   
- 
+
+
 def get_spotipy_auth_manager():
     auth_manager = SpotifyOAuth(
         client_id=CLIENT_ID,
@@ -37,7 +37,7 @@ def get_spotipy_service(token):
     return spotipy.Spotify(auth=token)
 
 
-def get_top_tracks(service, *, limit=20, offset=0, time_range='short_term'):
+def get_top_tracks(service, limit=20, offset=0, time_range='short_term'):
     """
     Return 20 of the most user top tracks.
 
@@ -45,23 +45,22 @@ def get_top_tracks(service, *, limit=20, offset=0, time_range='short_term'):
         param:offset        if you need more than 50 songs, you can use offset=50 to request deeper.
         param:time_range    can also be "medium_term" or "long_term"
     """
-    response = service.current_user_top_tracks(limit=limit, offset=offset, time_range=time_range)
+    response = service.current_user_top_tracks(limit=limit)
     if not response:
         return None
 
     total = []
     for track in response['items']:
         summary = {
-            'duration_sec': int(track['duration_ms'] * 1000),
-            'popularity': track['popularity'],
-            'spotify_url': track['external_url']['spotify'],
+            'spotify_url': track['external_urls']['spotify'],
+            'popularity': track['popularity']
         }
         total.append(summary)
 
     return total
 
 
-def get_recent_tracks(service, *, limit=20, after=None, before=None):
+def get_recent_tracks(service, limit=20, after=None, before=None):
     """
     Returns the 20 most recently played songs from user.
 
@@ -79,33 +78,30 @@ def get_recent_tracks(service, *, limit=20, after=None, before=None):
     total = []
     for track in response['items']:
         summary = {
-            'duration_sec': int(track['duration_ms'] * 1000),
-            'popularity': track['popularity'],
-            'spotify_url': track['external_url']['spotify'],
+            'spotify_url': track['track']['external_urls']['spotify'],
+            'popularity': track['track']['popularity']
         }
         total.append(summary)
 
     return total
 
 
-def get_saved_tracks(service, *, limit=20, offset=0):
+def get_saved_tracks(service, limit=20, offset=0):
     """
     Returns the 20 most recent user saved tracks.
 
         param:limit         only goes up to 50, more will fail the request
         param:offset        if you need more than 50 songs, you can use offset=50 to request deeper.
     """
-    resp = service.current_user_saved_tracks(limit=limit, offset=offset)
+    resp = service.current_user_saved_tracks(limit=limit)
     if not resp:
         return None
 
     total = []
-    for item in resp['items']:
-        track = item['track']
+    for track in resp['items']:
         summary = {
-            'duration_sec': int(track['duration_ms'] * 1000),
-            'popularity': track['popularity'],
-            'preview_url': track['preview_url'],
+            'spotify_url': track['track']['external_urls']['spotify'],
+            'popularity': track['track']['popularity']
         }
         total.append(summary)
 

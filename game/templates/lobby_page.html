@@ -59,8 +59,11 @@
                     players.innerHTML = '';
                     for (let i = 0; i < data.player_names.length; i++) {
                         let liElement = document.createElement('li');
-                        liElement.textContent = data.player_names[i];
+                        liElement.textContent = data.player_names[i].name;
                         liElement.classList.add('item');
+                        if(data.player_names[i].level === 7) {
+                            liElement.classList.add('rainbow-text');
+                        }
                         players.appendChild(liElement);
                     }
                     break;

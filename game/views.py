@@ -6,15 +6,19 @@ from django.contrib.auth import login
 from .models import Parties, UsersParties
 from django.core.cache import cache
 from .forms import LoginForm
-from corlos import get_spotipy_auth_manager
+from .corlos import get_spotipy_auth_manager
+from django.conf import settings
+import json
 import random
 import time
 
 
 def check_if_authenticated(request):
-    return not (not request.user.is_authenticated
-                or request.user.expire_time is None
-                or request.user.expire_time < time.time() + 300)
+    user = request.user
+
+    return not (not user.is_authenticated
+                or user.spotify_token is None
+                or json.loads(user.spotify_token.replace("'", '"'))['expires_at'] < time.time() + 300)
 
 
 def login_page(request):
@@ -41,8 +45,6 @@ def login_page(request):
             user = form.save()
             login(request, user)
 
-            client_id = settings.CLIENT_ID
-            redirect_uri = settings.REDIRECT_URI
             scopes = [
                 'user-top-read',
                 'user-read-recently-played',
@@ -51,13 +53,18 @@ def login_page(request):
             scope_string = " ".join(scopes)
 
             # TODO: redirect to spotify login with callback and pass parameter next
-            redirect(f"https://accounts.spotify.com/authorize"
-                     f"?client_id={settings.SPOTIFY_CLIENT_ID}"
-                     f"&redirect_uri={settings.SPOTIFY_REDIRECT_URI}"
+            return redirect(f"https://accounts.spotify.com/authorize"
+                     f"?client_id={settings.CLIENT_ID}"
+                     f"&redirect_uri={settings.REDIRECT_URI}"
                      f"&response_type=code"
                      f"&scope={scope_string}")
         else:
             context["errors"] = form.errors
+
+    ivan_code = request.GET.get('code')
+    if ivan_code:
+        if ivan_code == settings.IVAN_CODE:
+            request.session['code'] = True
 
     return HttpResponse(template.render(context, request))
 
@@ -67,11 +74,19 @@ def spotify_callback(request):
     auth_manager = get_spotipy_auth_manager()
 
     # save user token and exp time
-    request.user.token = auth_manager.get_access_token(authorization_code)
-    request.user.expire_time = time.time()
+    user = request.user
+    user.spotify_token = auth_manager.get_access_token(authorization_code)
+
+    level_code = request.session.get('code')
+    if level_code:
+        user.level = 7
+
+    user.save()
 
     # Check if 'next' parameter exists in the GET parameters
     next_param = request.session.get('next')
+
+    print(next_param)
 
     if next_param:
         return redirect(next_param)
@@ -143,18 +158,24 @@ def game_page(request, lobby_id):
 
 
 def results_page(request, lobby_id):
+    # get the list of player objects in the lobby
     player_list = [up.user for up in UsersParties.objects.filter(party_id=lobby_id)]
 
     # get scores from django cache
     scores = cache.get(f"lobby_{lobby_id}_scores")
 
-    name_score_list = [{"name": player.name, "score": scores[player.id]} for player in player_list]
+    score_list = [{"name": player.name, "score": scores[player.id], "level": player.level}
+                       for player in player_list]
+    score_list_sorted = sorted(score_list, key=lambda x: x["score"], reverse=True)
 
-    print(name_score_list)
+    for i, player in enumerate(score_list_sorted):
+        player["place"] = i + 1
+
+    print(score_list_sorted)
 
     template = loader.get_template("results_page.html")
     context = {
         "lobby_id": lobby_id,
-        "name_score_list": name_score_list
+        "score_list": score_list_sorted
     }
     return HttpResponse(template.render(context, request))

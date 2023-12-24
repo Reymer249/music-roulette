@@ -78,15 +78,16 @@ class LobbyConsumer(AsyncWebsocketConsumer):
         user_parties = await database_sync_to_async(
             lambda: UsersParties.objects.filter(party_id=self.lobby_id)
         )()
-        names = await database_sync_to_async(
+        players = await database_sync_to_async(
             lambda: list(Users.objects.filter(
                 id__in=[up.user_id for up in user_parties]
-            ).values_list('name', flat=True))
+            ).values_list('name', 'level'))
         )()
+        names = [{"name": p[0], "level": p[1]} for p in players]
 
         # send the user the updated user list
         await self.send(text_data=json.dumps({"type": "update_lobby_info", "player_names": names}))
-    
+
     async def chat_message(self, event):
         message = event["message"]
         print(f"chat: {message}")
@@ -127,15 +128,25 @@ class GameConsumer(AsyncWebsocketConsumer):
                 await database_sync_to_async(
                     lambda: cache.set(f"lobby_{self.lobby_id}_user_{self.user.id}_answer", text_data_json["answer"])
                 )()
+            case "ready":
+                # user ready to start
+                await database_sync_to_async(
+                    lambda: cache.set(f"lobby_{self.lobby_id}_user_{self.user.id}_ready", True)
+                )()
 
     async def init(self, event):
         player_ids = event["player_ids"]
         player_names = event["player_names"]
         round_num = event["round_num"]
+        player_levels = event["player_levels"]
         await self.send(text_data=json.dumps({"type": "init",
                                               "round_num": round_num,
                                               "player_ids": player_ids,
-                                              "player_names": player_names}))
+                                              "player_names": player_names,
+                                              "player_levels": player_levels}))
+
+    async def start_countdown(self, event):
+        await self.send(text_data=json.dumps({"type": "start_countdown"}))
 
     async def new_round(self, event):
         question_time = event["question_time"]
