@@ -13,9 +13,9 @@ import random
 def game_process(lobby_id, game_group_id):
     print("GAME PROCESS STARTS")
 
-    round_num = 3
-    question_time = 5
-    answer_time = 5
+    round_num = 5
+    question_time = 15
+    answer_time = 10
     start_wait_time = 5
 
     layer = get_channel_layer()
@@ -24,7 +24,10 @@ def game_process(lobby_id, game_group_id):
     scores = {player.id: 0 for player in player_list}
     played_songs = [""]
 
-    ivan_id = UsersParties.objects.filter(party_id=lobby_id, user__level=7).first().user.id
+    ivan_id = None
+    ivan = UsersParties.objects.filter(party_id=lobby_id, user__level=7)
+    if ivan.count():
+        ivan_id = ivan.first().user.id
     ivan_times = random.sample(range(1, round_num + 1), 1)
 
     while True:
@@ -76,8 +79,11 @@ def game_process(lobby_id, game_group_id):
             song_urls = ["https://open.spotify.com/track/36ezoymyNwbUSHSNiuI10A?si=51df8b6af35f4018",
                          "https://open.spotify.com/track/7fcIobA5JUkd90ad8y0cjO?si=7418dca95b814dbb",
                          "https://open.spotify.com/track/1MsLFY6sFtQmoVucRy0kF9?si=6c6f69ef6c394712",
-                         "https://open.spotify.com/track/3ewQvXUYzZ817ROJaVI2va?si=691c18abd5b74e02"]
-            weights = [13, 15, 7, 11]
+                         "https://open.spotify.com/track/3ewQvXUYzZ817ROJaVI2va?si=691c18abd5b74e02",
+                         "https://open.spotify.com/track/08ngkV9MwrLWjyjNc3GVPm?si=76b0c7cc78a34d93",
+                         "https://open.spotify.com/track/3vxfjCT0toa4xCJ8yIAq01?si=95ff608142fd4ed4",
+                         "https://open.spotify.com/track/3BF5XcGzssEL0Z5bP0a7OO?si=5e01d999f5b14de3"]
+            weights = [73, 73, 7, 10, 10, 10, 42]
         else:
             service = get_spotipy_service(json.loads(profile_token[answer].replace("'", '"'))['access_token'])
 

@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+LOCAL_DEV = not (os.environ.get("LOCAL_DEV") == "False")
+
 DB_NAME = os.environ.get("POSTGRES_NAME")
 DB_USER = os.environ.get("POSTGRES_USER")
 DB_HOST = os.environ.get("POSTGRES_HOST")
@@ -39,7 +41,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['musicroulette.azurewebsites.net', 'musicroulette.westeurope.azurecontainer.io', '127.0.0.1', 'localhost']
 
 AUTH_USER_MODEL = 'game.Users'
 
@@ -50,7 +52,7 @@ LOGOUT_REDIRECT_URL = LOGIN_URL
 
 CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
-REDIRECT_URI = os.getenv("SPOTIPY_REDIRECT_URI")
+REDIRECT_URI = (os.getenv("SPOTIPY_REDIRECT_URI") if not LOCAL_DEV else "http://localhost/spotify-callback")
 
 
 # Application definition
