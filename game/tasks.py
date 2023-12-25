@@ -26,9 +26,9 @@ def game_process(lobby_id, game_group_id):
 
     ivan_id = None
     ivan = UsersParties.objects.filter(party_id=lobby_id, user__level=7)
-    if ivan.count():
+    print(ivan.count())
+    if ivan.count() >= 1:
         ivan_id = ivan.first().user.id
-    ivan_times = random.sample(range(1, round_num + 1), 1)
 
     while True:
         if [cache.get(f"lobby_{lobby_id}_user_{player.id}_ready") for player in player_list].count(True) == len(player_list):
@@ -70,10 +70,10 @@ def game_process(lobby_id, game_group_id):
         # select songs
         profile_token = {player.id: player.spotify_token for player in player_list}
 
-        if ivan_id is not None and round_cnt in ivan_times:
-            answer = ivan_id
-        else:
-            answer = random.choice(list(profile_token.keys()))
+        answer = random.choice(list(profile_token.keys()))
+
+        print(f"PROFILE TOKEN: {profile_token}")
+        print(f"ANSWER: {answer}")
 
         if answer == ivan_id:
             song_urls = ["https://open.spotify.com/track/36ezoymyNwbUSHSNiuI10A?si=51df8b6af35f4018",
@@ -86,6 +86,7 @@ def game_process(lobby_id, game_group_id):
             weights = [73, 73, 7, 10, 10, 10, 42]
         else:
             service = get_spotipy_service(json.loads(profile_token[answer].replace("'", '"'))['access_token'])
+            print(f"Token: {json.loads(profile_token[answer].replace("'", '"'))['access_token']}")
 
             track_summaries = get_top_tracks(service) + get_recent_tracks(service) + get_saved_tracks(service)
 

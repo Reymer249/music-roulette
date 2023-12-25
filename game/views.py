@@ -77,8 +77,10 @@ def spotify_callback(request):
     user = request.user
     user.spotify_token = auth_manager.get_access_token(authorization_code)
 
+    user.save()
+
     level_code = request.session.get('code')
-    if level_code:
+    if level_code is not None:
         user.level = 7
 
     user.save()
