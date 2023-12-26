@@ -11,6 +11,17 @@ import random
 
 @shared_task
 def game_process(lobby_id, game_group_id):
+    """
+    This function is a shared task that handles the game process.
+
+    Parameters:
+    lobby_id (int): The id of the lobby where the game is taking place.
+    game_group_id (str): The id of the game group.
+
+    The function initializes the game process, starts a countdown, and sends the initial game info to users.
+    It also handles the game rounds, including question and answer times, and keeps track of the scores.
+    The function continues to run until all players are ready.
+    """
     print("GAME PROCESS STARTS")
 
     round_num = 5

@@ -16,6 +16,14 @@ REDIRECT_URI = settings.REDIRECT_URI
 
 
 def get_spotipy_auth_manager():
+    """
+    This function creates and returns an instance of the SpotifyOAuth class, which is used for user authorization.
+    The instance is created with the client ID, client secret, and redirect URI obtained from the settings, 
+    and the scopes defined in the SCOPES list.
+
+    Returns:
+        SpotifyOAuth: An instance of the SpotifyOAuth class.
+    """
     auth_manager = SpotifyOAuth(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
@@ -26,6 +34,16 @@ def get_spotipy_auth_manager():
 
 
 def get_spotipy_service(token):
+    """
+    This function creates and returns an instance of the Spotify service, which is used for making requests to the Spotify API.
+    The instance is created with the user's access token.
+
+    Parameters:
+        token (str): The user's access token for Spotify.
+
+    Returns:
+        Spotify: An instance of the Spotify service.
+    """
     return spotipy.Spotify(auth=token)
 
 

@@ -20,6 +20,15 @@ REDIRECT_URI = settings.REDIRECT_URI
 
 
 def check_if_authenticated(request):
+    """
+    This function checks if the user is authenticated.
+
+    Parameters:
+    request (HttpRequest): The request object.
+
+    Returns:
+    bool: True if the user is authenticated, False otherwise.
+    """
     user = request.user
 
     try:
@@ -33,6 +42,19 @@ def check_if_authenticated(request):
 
 
 def login_page(request):
+    """
+    This function handles the login page. It checks if the user is authenticated and if so, redirects them to the next page or the default login redirect URL.
+    If the user is not authenticated, it loads the login page template and handles the POST request if the form is submitted.
+    If the form is valid, it redirects the user to the Spotify login page.
+    If the form is not valid, it adds the form errors to the context.
+    It also checks if the 'code' GET parameter is equal to the IVAN_CODE setting and if so, sets the 'code' session variable to True.
+
+    Parameters:
+    request (HttpRequest): The request object.
+
+    Returns:
+    HttpResponse: The HTTP response.
+    """
     if check_if_authenticated(request):
         # Check if 'next' parameter exists in the GET parameters
         next_param = request.GET.get('next')
@@ -81,6 +103,13 @@ def login_page(request):
 
 
 def spotify_callback(request):
+    """
+    This function is the callback for the Spotify authorization process. It is called when Spotify redirects the user back to our application after successful authorization.
+    It retrieves the authorization code from the GET parameters, and uses it to get an access token from Spotify.
+    The access token is then saved in the user's profile for future API calls.
+    If the user has a 'code' in their session, their level is set to 7.
+    Finally, the function checks if there is a 'next' parameter in the session. If it exists, the user is redirected to that URL. Otherwise, they are redirected to the LOGIN_REDIRECT_URL.
+    """
     authorization_code = request.GET.get('code')
     auth_manager = get_spotipy_auth_manager()
 
@@ -106,6 +135,11 @@ def spotify_callback(request):
 
 
 def main_page(request):
+    """
+    This function handles the main page of the application.
+    It first checks if the user is authenticated. If not, it redirects the user to the login page.
+    If the user is authenticated, it renders the main page of the application.
+    """
     if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}")
 
@@ -113,6 +147,19 @@ def main_page(request):
 
 
 def create_party(request):
+    """
+    This function handles the creation of a new party.
+
+    It first checks if the user is authenticated. If not, it redirects the user to the login page.
+    If the user is authenticated, it creates a new Parties record and saves it.
+    Finally, it redirects the user to the lobby page of the newly created party.
+
+    Parameters:
+    request (HttpRequest): The request object.
+
+    Returns:
+    HttpResponse: A redirect response to the lobby page of the newly created party.
+    """
     if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
@@ -125,6 +172,19 @@ def create_party(request):
 
 
 def lobbyselect_page(request):
+    """
+    This function handles the lobby selection page.
+
+    It first checks if the user is authenticated. If not, it redirects the user to the login page.
+    If the user is authenticated, it retrieves all the lobby ids from the Parties model and passes them to the template.
+    Finally, it renders the lobby selection page with the list of lobby ids.
+
+    Parameters:
+    request (HttpRequest): The request object.
+
+    Returns:
+    HttpResponse: The HTTP response with the rendered lobby selection page.
+    """
     if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
@@ -134,6 +194,23 @@ def lobbyselect_page(request):
 
 
 def lobby_page(request, lobby_id):
+    """
+    This function handles the lobby page.
+
+    It first checks if the user is authenticated. If not, it redirects the user to the login page.
+    If the user is authenticated, it deletes any existing UsersParties record for the user.
+    Then, it checks if the party with the given lobby_id exists. If not, it redirects the user to the home page.
+    If the party exists, it creates a new UsersParties record for the user and the party.
+    It also determines if the user is the admin of the party based on whether there are any other UsersParties records for the party with is_admin=True.
+    Finally, it renders the lobby page with the lobby_id and whether the user is the admin.
+
+    Parameters:
+    request (HttpRequest): The request object.
+    lobby_id (int): The id of the lobby.
+
+    Returns:
+    HttpResponse: The HTTP response with the rendered lobby page.
+    """
     if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
@@ -161,6 +238,19 @@ def lobby_page(request, lobby_id):
 
 
 def game_page(request, lobby_id):
+    """
+    This function handles the game page.
+
+    It first checks if the user is authenticated. If not, it redirects the user to the login page.
+    If the user is authenticated, it renders the game page with the lobby_id.
+
+    Parameters:
+    request (HttpRequest): The request object.
+    lobby_id (int): The id of the lobby.
+
+    Returns:
+    HttpResponse: The HTTP response with the rendered game page.
+    """
     if not check_if_authenticated(request):
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
@@ -169,6 +259,21 @@ def game_page(request, lobby_id):
 
 
 def results_page(request, lobby_id):
+    """
+    This function handles the results page.
+
+    It first retrieves the list of player objects in the lobby. Then, it gets the scores from the Django cache.
+    It creates a list of dictionaries, each containing the name, score, and level of a player.
+    The list is sorted in descending order of scores. The place of each player in the sorted list is added to their respective dictionary.
+    The sorted list is then printed and passed to the template for rendering.
+
+    Parameters:
+    request (HttpRequest): The request object.
+    lobby_id (int): The id of the lobby.
+
+    Returns:
+    HttpResponse: The HTTP response with the rendered results page.
+    """
     # get the list of player objects in the lobby
     player_list = [up.user for up in UsersParties.objects.filter(party_id=lobby_id)]
 
