@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Play Music Roulette{% endblock %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_page.css' %}" type="text/css"/>
+{% endblock %}
+
+{% block body %}
+    <h1>Choose your lobby:</h1>
+
+    <div class="flex-container">
+        <div class="host">
+            <p class="host_text">Create your own game and invite others!</p>
+            <button class="host_button" onclick="location.href='/create-party/';">Host Game</button>
+        </div>
+    
+        <div class="join">
+            <p class="join_text">You got invited and have a game code?</p>
+            <button class="join_button" onclick="location.href='/lobby-select/';">Join Game</button>
+        </div>
+    </div>
+
+{% endblock %}

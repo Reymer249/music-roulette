@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Login page{% endblock %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'login_page.css' %}" type="text/css"/>
+{% endblock %}
+
+{% block colour_0 %}"#7cc6fe"{% endblock %}
+{% block colour_1 %}"#f9b4ed"{% endblock %}
+{% block colour_2 %}"#7fdeff"{% endblock %}
+{% block colour_3 %}"#ef94d5"{% endblock %}
+{% block colour_4 %}"#c4c7ff"{% endblock %}
+
+{% block body %}
+    <h1>Welcome to Music Roulette!</h1>
+    <div class="login-box">
+        <form method="post">
+            {% csrf_token %}{{ form }}
+            <button class="play_button" type="submit">Log In With Spotify</button>
+        </form>
+    </div>
+    {% if errors %}
+      <ul class="errorlist">
+        {% for error_field, error_description in errors.items %}
+          <li>{{ error_description }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <img src="https://media.tenor.com/gXMtMCZ5WccAAAAd/cat-head-bump-cat-nodding.gif" style="margin-top:5vh;width:20vh;height:20vh;">
+
+    <script type="text/javascript">
+        function validateForm() {
+            const username = document.getElementById('username').value;
+
+            if (username.trim() === '') {
+                alert('Username cannot be empty');
+                return false;
+            }
+
+            window.location.href = '/spotify-login';
+
+            return true;
+    }
+    </script>
+{% endblock %}
+
+{% block logout_button %}
+{% endblock %}

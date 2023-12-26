@@ -1,0 +1,131 @@
+body{
+    margin: 0px;
+    height: 100%;
+}
+svg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+.wrap-layer{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+.text-layer{
+    position: absolute;
+    margin: 0px;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /*non-critical styles left out*/
+}
+.background-layer{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+h1{
+    color: rgb(26, 82, 50);
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    font-size: 7vw;
+    text-align: center;
+    margin-left: 1.5vw;
+    margin-top: 5vh;
+    padding-top: 2%;
+}
+div.scroll {
+    padding: 2%;
+    width: 50vw;
+    height: 40vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-left: 24vw;
+    margin-top: -3vmin;
+    border-color:rgb(29, 88, 55);
+    border-style: solid;
+    text-align: center;
+}
+
+.button-lobby{
+    display: flex;
+    position: relative;
+    padding: 3% 40%;
+    border: none;
+    background: rgb(152, 233, 187);
+    color: rgb(35, 105, 65);
+    width: 50vw;
+    margin: 2.5% 0;
+    transition: .5s;
+    font-size: 4vmin;
+    border-radius: 15px;
+    text-align: center;
+}
+h0{
+    position: fixed;
+    font-size: 1.7vmin;
+    top: 0vh;
+    left: 0vw;
+    width: 12vw;
+    height: 5vh;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background-color: rgb(219, 255, 226);
+    color:rgb(0, 0, 0);
+    border-right: .1vw solid rgb(23, 145, 76);
+}
+
+button:hover{
+    transform:scale(1.06);
+    background: rgb(53, 161, 100);
+}
+h2{
+    text-align: center;
+    font-size: 4vmin;
+    margin-top: -5vmin;
+    color:rgb(29, 88, 55);
+    font-family: 'Poppins', sans-serif;
+}
+h3{
+    text-align: center;
+    font-size: 6vmin;
+    margin-top: 2vh;
+    color:rgb(29, 88, 55);
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+}
+.buttons{
+    position: relative;
+    margin-top: 0vh;
+    box-sizing:border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.button-home{
+    margin-top: 2vh;
+    border: hidden;
+    font-family: 'Fredoka One', "Times New Roman", Times, serif;
+    font-size: 4.5vmin;
+    background: rgb(23, 145, 76);
+    width: 30vw;
+    color: rgb(218, 248, 218);
+    font-weight: bold;
+    border-radius: 15px;
+    transition: .5s;
+}
+.logout-color1 {
+    background-color: rgb(219, 255, 226);
+}
+.logout-color2 {
+    background-color: rgb(23, 145, 76);
+}

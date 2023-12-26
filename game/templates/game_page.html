@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}Guess time!{% endblock %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'game_page.css' %}" type="text/css"/>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+{% endblock %}
+
+
+{% block colour_0 %}"#6fcaeb"{% endblock %}
+{% block colour_1 %}"#81d1ee"{% endblock %}
+{% block colour_2 %}"#a5dff3"{% endblock %}
+{% block colour_3 %}"#54c0e8"{% endblock %}
+{% block colour_4 %}"#93d8f0"{% endblock %}
+
+
+{% block popup %}
+    <!-- ready? popup -->
+    <div id="popup">
+        <p id="popup-text">Ready?</p>
+    </div>
+{% endblock %}
+
+
+{% block body %}
+    <!-- countdown -->
+    <svg width = "162" height = "163" viewBox="-162 -163 486 492" xmlns="http://www.w3.org/2000/svg">
+        <g id="numbers" fill="none" stroke="#0c58e5" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+            <path id="zero" d="M122.0935 35.4792L103.417 16H45.8173l-6.808 55.2633s26.0693-24.6445 49.2223-13.573c23.153 11.0718 28.5735 42.5957 13.2497 58.089-6.7267 6.801-13.994 13.0975-36.192 11.9657C43.0912 126.613 35 99.295 35 99.295l18.0092 18.1s6.735 17.1982 16.5437 24.0898c9.8085 6.8915 24.3125 9.1998 37.091 2.559 29.5167-15.34 28.0665-52.1296 1.9665-65.7712-26.1-13.6415-51.1888 12.0888-51.1888 12.0888l6.7675-54.8822h57.9043z"></path>
+        </g>
+    </svg>
+
+    <!-- Quiz Box -->
+    <div class="quiz_box">
+        <header>
+            <div class="title">Whose song is this?</div>
+            <div class="timer">
+                <div class="time_left_txt">Time Left</div>
+                <div class="timer_sec">05</div>
+            </div>
+            <div class="time_line"></div>
+        </header>
+
+        <section>
+            <iframe id="song" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            <div id="option_list"></div>
+        </section>
+
+        <footer>
+            <button class="next_btn">Next Song</button>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TimelineMax.min.js"></script>
+
+    {{ lobby_id|json_script:"lobby-id" }}
+    <script>
+
+        // initializing variables
+
+        const quiz_box = document.querySelector(".quiz_box");
+        const titleText = document.querySelector(".quiz_box .title");
+        const time_line = document.querySelector("header .time_line");
+        const timeText = document.querySelector(".timer .time_left_txt");
+        const timeCount = document.querySelector(".timer .timer_sec");
+        const next_btn = document.querySelector("footer .next_btn");
+
+        let roundNum;
+        let playerIDs;
+        let playerNames;
+        let questionTimeValue;
+        let answerTimeValue;
+        let spotifyLink;
+        let roundAnswer;
+        let roundCnt = 0;
+        let counter;
+        let counterLine;
+        let widthValue = 0;
+        let optionNum;
+
+
+
+
+
+        // configuring a websocket connection
+
+        const lobbyId = JSON.parse(document.getElementById('lobby-id').textContent);
+
+        const rouletteSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/game/'
+            + lobbyId
+            + '/'
+        );
+
+        rouletteSocket.onclose = function (closeEvent)
+        {
+            console.log(closeEvent);
+            window.location.href = '/';
+        }
+
+        rouletteSocket.onmessage = function(e) {
+            let data = JSON.parse(e.data);
+            console.log('Data:', data);
+
+            switch(data.type) {
+                case "init":
+                    // get number of rounds, player list
+                    playerIDs = data.player_ids;
+                    playerNames = data.player_names;
+                    playerLevels = data.player_levels;
+                    roundNum = data.round_num;
+                    optionNum = playerIDs.length;
+
+                    let players = document.getElementById("option_list");
+                    for (let i = 0; i < playerIDs.length; i++) {
+                        let divElement = document.createElement('div');
+                        divElement.innerHTML = "<span>" + playerNames[i] + "</span>";
+                        divElement.classList.add('option');
+                        if (playerLevels[i] === 7) {
+                            divElement.classList.add('rainbow-text');
+                        }
+                        divElement.id = "p" + playerIDs[i];
+                        players.appendChild(divElement);
+                    }
+                    break;
+                case "start_countdown":
+                    document.getElementById("popup").style.visibility = "hidden";
+                    countdownTimer();
+                    break;
+                case "new_round":
+                    // get question time, answer time, song link
+                    questionTimeValue = data.question_time;
+                    answerTimeValue = data.answer_time;
+                    spotifyLink = data.spotify_link;
+                    let song_link = document.getElementById("song");
+                    song_link.src = data.spotify_link;
+
+                    clearInterval(counter); //clear counter
+                    quiz_box.classList.add("activeQuiz"); //show quiz box
+                    showQuetions(); //calling showQestions function
+                    StartRound();
+                    break;
+                case "correct_ans":
+                    // get correct ans
+                    roundAnswer = data.correct_ans;
+                    // check answer
+                    CheckAnswer();
+                    break;
+                case "game_results":
+                    window.location.href = '/lobby/{{ lobby_id }}/results/';
+                    break;
+            }
+        }
+
+
+
+
+
+        // path array
+        var number = ["M31 93.3907L81.918 16h16.7775v110.7913l19.5336 20.9775V34.9362h-15.3084l-53.121 77.2553v11.894h83.0365l-20.2774-20.2774H31V93.3908z",
+        "M37.0342 37.6817S51.2687 7.707 79.7088 16.6743c8.6725 2.7344 24.575 14.6587 22.4358 30.4855-2.1393 15.8267-13.1684 20.775-13.1684 20.775s26.571 18.2613 13.1684 42.0846C95.8768 121.1607 86.112 127.486 66.027 127.486 45.9415 127.486 35 101.8853 35 101.8853l15.7454 15s10.134 34.134 45.0686 29.7208c16.13-2.0377 32.3926-20.6168 28.0143-39.2557-4.3782-18.639-19.1437-19.709-19.1437-19.709s16.129-7.1298 14.7655-25.8934C118.0864 42.9846 98.3537 32.681 84.7502 34.554c-25.4133 3.499-29.4394 21.685-29.4394 21.685l-18.2766-18.557z",
+        "M37 37.8676s10.1055-24.2898 37.181-22.802c27.0756 1.488 40.7335 28.0095 25.676 51.2668-15.0577 23.2573-61.5956 61.2517-61.5956 61.2517h69.7332L126.0424 147H53.9352s56.578-43.9928 66.574-66.5963c2.1922-4.9576 7.7702-18.274 0-31.545-7.7704-13.2714-23.272-16.2114-33.5493-15.1312-25.4584 2.6758-31.1116 23.9758-31.1116 23.9758L37 37.8676z",
+        "M66 16.9944C66 15.893 66.8998 15 68.0023 15h28.9954C98.1035 15 99 15.8955 99 16.9944v128.0112C99 146.107 98.1002 147 96.9977 147H68.0023C66.8965 147 66 146.1045 66 145.0056V16.9944z"];
+
+        // color array
+        var color = ["#069e2d", "#de7f11", "#a200fa", "#dc2f02"];
+
+        function countdownTimer(){
+            let time = -1; //initial time
+            counter = setInterval(timer, 1000);
+            function timer(){
+                time++; //increment the time value
+                if(time >= number.length){ //if timer is greater than number of paths
+                    clearInterval(counter); //clear counter
+                    quiz_box.classList.add("activeQuiz"); //show quiz box
+                    showQuetions(); //calling showQestions function
+                }
+                else {
+                    document.getElementById("zero").removeAttribute("d");
+                    document.getElementById("zero").setAttribute("d", number[time]);
+                    document.getElementById("numbers").setAttribute("stroke", color[time]);
+                }
+            }
+        }
+
+
+
+
+
+        // popup click event
+
+        document.getElementById("popup").addEventListener('click', () => {
+            document.getElementById("popup-text").textContent = "Waiting for others...";
+
+            rouletteSocket.send(JSON.stringify({
+                "type": "ready"
+            }));
+        });
+
+
+
+
+
+        // quiz
+        
+        // set onclick attribute to all available options
+        function showQuetions(){
+            for(let i = 0; i < optionNum; i++){
+                const optionList = document.getElementById("option_list");
+                const option = optionList.getElementsByClassName("option");
+                option[i].setAttribute("onclick", "optionSelected(this)");
+            }
+        }
+        // creating the new div tags which for icons
+        let correctIconTag = '<div id="correct_icon" class="icon correct"><i class="fas fa-check"></i></div>';
+        let tickIconTag = '<div id="tick_icon" class="icon tick"><i class="fas fa-check"></i></div>';
+        let crossIconTag = '<div id="cross_icon" class="icon cross"><i class="fas fa-times"></i></div>';
+        
+        //if user clicked on option
+        function optionSelected(answer){
+            const optionList = document.getElementById("option_list");
+
+            const optionNum = optionList.children.length; //getting all option items
+            
+            // disselect previous option
+            for(let i = 0; i < optionNum; i++){
+                if(optionList.children[i].classList.contains("selected")){
+                    optionList.children[i].classList.remove("selected");
+                }
+            }
+
+            answer.classList.add("selected"); //mark option as selected
+        }
+
+        function numericTimer(time){
+            timeCount.textContent = time; //changing the value of timeCount with time value
+            time--; //decrement the time value
+            if(time < 9){ //if timer is less than 9
+                let addZero = timeCount.textContent;
+                timeCount.textContent = "0" + addZero; //add a 0 before time value
+            }
+            counter = setInterval(timer, 1000);
+            function timer(){
+                timeCount.textContent = time; //changing the value of timeCount with time value
+                time--; //decrement the time value
+                if(time < 9){ //if timer is less than 9
+                    let addZero = timeCount.textContent; 
+                    timeCount.textContent = "0" + addZero; //add a 0 before time value
+                }
+            }
+        }
+
+        function timerLine(time, value){
+            counterLine = setInterval(timer, value);
+            console.log(value);
+            function timer(){
+                time += 1; //upgrading time value with 1
+                time_line.style.width = time/10 + "%"; //increasing width of time_line with px by time value
+                if(time > 999){ //if time value is greater than 50vw
+                    clearInterval(counterLine); //clear counterLine
+                }
+            }
+        }
+
+        function StartRound() {
+            clearInterval(counter); //clear counter
+            clearInterval(counterLine); //clear counterLine
+            timeText.textContent = "Time Left"; //change the time text to time off
+            titleText.textContent = "Whose song is this?"; //change the title text to whose song is this
+
+            const optionList = document.getElementById("option_list");
+
+            if(roundCnt < roundNum){ //if round count is less than total round number
+                roundCnt++; //increment the roundCnt value
+                showQuetions(); //calling showQestions function
+                time_line.style.background = "#007bff"; //switch to numericTimer style
+                numericTimer(questionTimeValue); //calling numericTimer function
+                timerLine(widthValue, questionTimeValue); //calling timerLine function
+                for(let i = 0; i < optionNum; i++){
+                    optionList.children[i].classList.remove("disabled"); //when the time starts enable all options
+                }
+                // empty previous options
+                for(let i = 0; i < optionNum; i++){
+                    if(optionList.children[i].classList.contains("selected")) {
+                        optionList.children[i].classList.remove("selected")
+                        if(optionList.children[i].classList.contains("correct")){
+                            optionList.children[i].classList.remove("correct");
+                            let cur_tag = document.getElementById("tick_icon");
+                            optionList.children[i].removeChild(cur_tag);
+                        }
+                        else if(optionList.children[i].classList.contains("incorrect")){
+                            optionList.children[i].classList.remove("incorrect");
+                            let cur_tag = document.getElementById("cross_icon");
+                            optionList.children[i].removeChild(cur_tag); // removing cross icon
+                        }
+                    }
+                    else if(optionList.children[i].classList.contains("correct")){
+                        optionList.children[i].classList.remove("correct");
+                        let cur_tag = document.getElementById("correct_icon");
+                        optionList.children[i].removeChild(cur_tag); // removing correct icon
+                    }
+                }
+            }
+        }
+
+        function CheckAnswer() {
+            clearInterval(counter); //clear counter
+            clearInterval(counterLine); //clear counterLine
+            timeText.textContent = "Next question in"; //change the time text to next question in
+            titleText.textContent = "The song belongs to..."; //change the title text to the song belongs to
+
+            const optionList = document.getElementById("option_list");
+
+            let user_answer = optionList.children[0];
+            let selectedOption = false;
+
+            //getting user selected option
+            for(let i=0; i < optionNum; i++){
+                if(optionList.children[i].classList.contains("selected")){
+                    selectedOption = true;
+                    user_answer = optionList.children[i];
+                }
+            }
+
+            //if user selected any option
+            if(selectedOption){
+                let userAns = user_answer.id;
+
+                // send the answer through the websocket
+                rouletteSocket.send(JSON.stringify({
+                    "type": "answer",
+                    "answer": userAns
+                }));
+
+                console.log(userAns + "   " + 'p' + roundAnswer)
+
+                if(userAns === 'p' + roundAnswer){ //if the selected option is equal to the correct answer
+                    user_answer.classList.add("correct"); //adding green color to correct selected option
+                    user_answer.insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to correct selected option
+                    console.log("Correct Answer");
+                }else{
+                    user_answer.classList.add("incorrect"); //adding red color to correct selected option
+                    user_answer.insertAdjacentHTML("beforeend", crossIconTag); //adding cross icon to correct selected option
+                    console.log("Wrong Answer");
+
+                    for(let i = 0; i < optionNum; i++){
+                        if(optionList.children[i].id === roundAnswer){ //if there is an option which is matched to an array answer
+                            optionList.children[i].classList.add("correct"); //adding green color to matched option
+                            optionList.children[i].insertAdjacentHTML("beforeend", correctIconTag); //adding tick icon to matched option
+                            console.log("Auto selected correct answer.");
+                        }
+                    }
+                }
+            }
+            // if user did not select any option
+            else{
+                for(let i = 0; i < optionNum; i++){
+                    if(optionList.children[i].id === roundAnswer){ //if there is an option which is matched to an array answer
+                        optionList.children[i].setAttribute("class", "correct"); //adding green color to matched option
+                        optionList.children[i].insertAdjacentHTML("beforeend", correctIconTag); //adding tick icon to matched option
+                        console.log("Time Off: Auto selected correct answer.");
+                    }
+                }
+            }
+
+            for(let i = 0; i < optionNum; i++){
+                optionList.children[i].classList.add("disabled"); //once the time is up disable all options
+            }
+            numericTimer(answerTimeValue); //calling numericTimer function
+            timerLine(widthValue, answerTimeValue) //calling timerLine function
+            time_line.style.background = "#ff7b00";
+        }
+
+    </script>
+{% endblock %}
