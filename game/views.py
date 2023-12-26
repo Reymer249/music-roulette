@@ -11,10 +11,21 @@ from django.conf import settings
 import json
 import random
 import time
+from spotipy.oauth2 import SpotifyOAuth
+
+
+CLIENT_ID = settings.CLIENT_ID
+CLIENT_SECRET = settings.CLIENT_SECRET
+REDIRECT_URI = settings.REDIRECT_URI
 
 
 def check_if_authenticated(request):
     user = request.user
+
+    try:
+        print(f"{user.name}: {user.spotify_token}")
+    except:
+        print("no name / token")
 
     return not (not user.is_authenticated
                 or user.spotify_token is None
@@ -75,12 +86,10 @@ def spotify_callback(request):
 
     # save user token and exp time
     user = request.user
-    user.spotify_token = auth_manager.get_access_token(authorization_code)
-
-    user.save()
+    user.spotify_token = auth_manager.get_access_token(authorization_code, check_cache=False)
 
     level_code = request.session.get('code')
-    if level_code is not None:
+    if level_code:
         user.level = 7
 
     user.save()

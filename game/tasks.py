@@ -14,8 +14,8 @@ def game_process(lobby_id, game_group_id):
     print("GAME PROCESS STARTS")
 
     round_num = 5
-    question_time = 15
-    answer_time = 10
+    question_time = 10
+    answer_time = 5
     start_wait_time = 5
 
     layer = get_channel_layer()

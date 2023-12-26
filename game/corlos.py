@@ -15,14 +15,6 @@ CLIENT_SECRET = settings.CLIENT_SECRET
 REDIRECT_URI = settings.REDIRECT_URI
 
 
-def get_embedded_html(spotify_url):
-    response = requests.get('https://open.spotify.com/oembed?url=' + spotify_url)
-    if response:    # Meaning code < 400:
-        data = response.json()
-        return data['html']
-    return None
-
-
 def get_spotipy_auth_manager():
     auth_manager = SpotifyOAuth(
         client_id=CLIENT_ID,
