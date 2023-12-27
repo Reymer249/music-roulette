@@ -23,21 +23,20 @@ class Testing(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'lobby_page/index.html')
 
-    def setup(self):
-        self.user = Users.objects.create_user(username='Vova', spotify_link='https://open.spotify.com/user/arlfri0jaumrp6p902lvj1dva')
+    def setUp(self):
+        self.user = Users.objects.create_user(username='Vova')
         self.client = Client()
 
     def create_user_test(self):
         self.assertIsNotNone(self.user)
         self.assertEqual(self.user.username, 'Vova')
-        self.assertEqual(self.user.spotify_link, 'https://open.spotify.com/user/arlfri0jaumrp6p902lvj1dva')
 
     def test_login(self):
-        login = self.client.login(username='Vova', spotify_link='https://open.spotify.com/user/arlfri0jaumrp6p902lvj1dva')
+        login = self.client.login(username='Vova')
         self.assertTrue(login)
 
     def test_logout(self):
-        self.client.login(username='Vova', spotify_link='https://open.spotify.com/user/arlfri0jaumrp6p902lvj1dva')
+        self.client.login(username='Vova')
         response = self.client.get('main_page/logout/')
         self.assertEqual(response.status_code, 302)
 
