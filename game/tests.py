@@ -27,7 +27,7 @@ class Testing(TestCase):
         self.user = Users.objects.create_user(username='Vova')
         self.client = Client()
 
-    def create_user_test(self):
+    def test_create_user(self):
         self.assertIsNotNone(self.user)
         self.assertEqual(self.user.username, 'Vova')
 
