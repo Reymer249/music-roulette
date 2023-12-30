@@ -1,11 +1,11 @@
 #!/bin/bash
 source .env
 
-if [ "$LOCAL_DEV" == "True" ]; then
-    echo "Running in local development mode"
-else
-    echo "Running on production"
+if [ "$LOCAL_DEV" == "False" ]; then
+    echo "Running in production environment"
     sleep 20
+else
+    echo "Running in local development mode"
 fi
 
 python manage.py makemigrations game
