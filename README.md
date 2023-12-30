@@ -8,6 +8,10 @@ How to start the server for local testing/development:
 3) Execute "docker compose up"
 4) Check out http://localhost
 
+We aslo deployed our project to azure. You can access it at http://musicroulette.westeurope.azurecontainer.io/ (But to actually play it we need to add your spotify accout to our app's spotify dashboard, because spotify is limiting access to their api)
+
+
+
 ![Login page](./images/login-page.png?raw=true "Login page")
 ![Main page](./images/main-page.png?raw=true "Main page")
 ![Lobby select page](./images/lobby-select.png?raw=true "Lobby select page")
